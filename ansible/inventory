@@ -1,0 +1,31 @@
+Inventory:
+
+    [group_a]
+    server1 ansible_host=203.0.113.111
+    server2 ansible_host=203.0.113.112
+
+    [group_b]
+    server3 ansible_host=203.0.113.113
+    server4 ansible_host=server_hostname
+
+    [group_a:vars]
+    ansible_user=sammy
+
+    [group_b:vars]
+    ansible_user=myuser
+
+
+Ansible allows you to assign groups to other groups using the [groupname:children] syntax in the inventory. This gives you the ability to name certain groups members of other groups. Children groups have the ability to override variables set by the parent groups.
+
+
+. . .
+[function:children]
+web
+database
+loadbalancer
+region
+
+[environments:children]
+dev
+stage
+prod

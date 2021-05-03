@@ -1,0 +1,213 @@
+Variables
+
+    Variable names should be letters, numbers, and underscores. Variables should always start with a letter.
+
+
+    There is no '=', use ':' , like while assigning the value to the variable
+
+
+    We use variables using curly braces {{}}
+
+    If we are using variable at the starting of line, then use "{{ }}"
+
+        example-1:
+
+            - name: Task1
+              command: "{{ variable1 }}"
+
+        example-2:
+
+            - name: Task2
+              command: "{{ person_name }} is working graduate"
+
+
+    If the variable usage doesn't start at beginning, then only curly are enough
+
+        example:
+
+            - name: Task1
+              command: ls {{ variable1 }}
+
+
+    Defining the vars of a group in inventory by:
+
+            [group_a:vars]
+            ansible_user=root
+
+
+    vars_files and include_vars. These can be used within Ansible plays to explicitly load additional variables in the order defined within the file.
+
+    The vars_files directive is valid within the context of a play, while the include_vars module can be used in tasks.
+
+    Example:
+
+        ---
+        - name: variable precedence test
+          hosts: all
+          vars_files:
+            - "vars/{{ env }}.yml"
+            - "vars/{{ function }}.yml"
+          tasks:
+            - debug: var=server_memory_size
+
+
+        ---
+        - name: variable precedence test
+          hosts: localhost
+          tasks:
+            - include_vars:
+                file: "{{ item }}"
+              with_items:
+                - "vars/{{ function }}.yml"
+                - "vars/{{ env }}.yml"
+            - debug: var=server_memory_size
+
+
+Define array of variables:
+
+    ---
+    - name: Play-1
+      hosts: all
+      become: True
+      vars:
+        - variable1:
+            - value1
+            - value2
+            - value3
+      tasks:
+        - name: Task-1
+          command: "{{ item }}"
+          with_items: "{{ variable1 }}"
+
+
+Ways:
+
+    1. Define with the file directly
+    2. Passing from external files
+    3. Passing from external hosts inventory
+    4. Using group_vars or hosts_vars and so on..
+
+
+    1. With in the file:
+
+        ---
+        - name: First Play
+          hosts: all
+          become: True
+          vars:
+            - variable1: value1
+            - variable2: value2
+          tasks:
+          - name: First task
+
+
+    2. Passing from external files
+
+        2.a Using in plays: (use vars_files directive)
+
+                vars_files
+                  - file_name
+
+                 Example:
+
+                     ---
+                     - name: Play-1
+                       hosts: all
+                       become: True
+                       vars_files:
+                         - file_name1
+                         - file_name2
+                       tasks:
+                         - name: Task-1
+
+
+
+We have "vars" section in plays, not in tasks section
+
+"vars", this directive can be used as option for "play" and "role", "can't use for tasks"
+
+variables created using "vars" are play variables, irrelevent to where we create them, i.e
+
+  Example-1:
+
+   - name: Play-1
+     hosts: all
+     vars:
+       - day_of_the_week: Monday123
+     tasks:
+       - name: Task-1
+         debug:
+           msg: "day_of_the_week is {{ day_of_the_week  }}"
+
+  Example-2:
+
+   - name: Play-1
+     hosts: all
+     tasks:
+       - name: Task-1
+         debug:
+           msg: "day_of_the_week is {{ day_of_the_week  }}"
+     roles:
+       - name: samplerole
+         vars:
+           - day_of_the_week: Monday
+
+
+
+Above both example defining "day_of_the_week" at different places but, they are same, variable means it is at play level, no role or task level
+
+vars directive defined in plays sections is accessable within that play section, not in another play
+
+vars directive defined in roles and plays have scope in that whole play (in that play)
+
+
+set_fact:
+
+    Used for setting the variables, but this variable scope is whole playbook (Whole Project)
+
+
+
+We can store the output of module or shell command in a variable using register
+
+     - name: Run a shell command and register its output as a variable
+       ansible.builtin.shell: /usr/bin/foo
+       register: foo_result
+       ignore_errors: true
+
+
+We can include the variables using "include_vars"
+
+
+hostvars, group_names, groups
+
+hostvars:
+
+      lets you ask about the variables of another host, including facts that have been gathered about that host. If, at this point, you haven't talked to that host yet in any play in the playbook or set of playbooks, you can still get the variables, but you will not be able to see the facts.
+
+group_names:
+
+     group_names is a list (array) of all the groups the current host is in.
+
+groups:
+
+     groups is a list of all the groups (and hosts) in the inventory. 
+
+
+Using above variables, we can get the all variables of hosts i.e facts of hosts and variables that we defined in inventory file
+
+
+group_vars/all
+group_vars/my_location // my_location is a group
+
+
+Variable Order precedence:
+
+    https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#understanding-variable-precedence
+
+
+
+References:
+
+    1. https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html
+    2. https://digitalis.io/blog/ansible/ansible-variables-scope-and-precedence/
+

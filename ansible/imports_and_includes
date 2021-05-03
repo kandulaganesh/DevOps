@@ -1,0 +1,50 @@
+imports/include
+
+
+import_playbook  --> for importing the play (play level)
+import_tasks   --> For importing tasks (tasks level, so in the tasks block we do)
+import_role    --> Importing the role in the tasks section
+    tasks_from: change the default tasks include file (default is main.yml, but load custom tasks file)
+
+
+
+If we want to call some directive (for now include and import directive), there are two ways
+
+    1. If we want to call the directive alone, without passing much options/parameters to the directive,
+
+        - <directive>
+
+        example:
+
+            - import_playbook: <playbook-name>
+
+            - import_tasks: <task-name>
+            - roles: <role_name>
+
+            roles:
+              - role-1
+              - role-2
+
+
+
+    2. If we want to call the directive, but along with directive we want to pass options/parameters as well
+
+            - name: Importing Playbook
+              import_playbook: <playbook-name>
+              vars:
+                 variable1: value1
+
+             - name: Importing Task
+               import_tasks: <task-name>
+
+               
+Difference:
+
+	All import* statements are pre-processed at the time playbooks are parsed.
+	All include* statements are processed as they encountered during the execution of the playbook.
+
+	References:
+		https://serverfault.com/questions/875247/whats-the-difference-between-include-tasks-and-import-tasks
+
+
+

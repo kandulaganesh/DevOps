@@ -1,0 +1,17 @@
+1. Variables defined in vars/main.yml have high precedence.
+2. Variables defined in defaults have low precedence.
+
+
+
+Ways of defining Variables:
+
+   1. in files (defailus/main.yml, vars/main.yml)
+   2. Passing as parameter to role using vars directive
+
+	- hosts: all
+          roles:
+            - role: my-role
+              day_of_the_week: Monday
+
+
+Variables defined in the play section using vars directive are accessable with-in the play and all components inside the play also have access i.e like roles defined play have access to those variables

@@ -1,0 +1,73 @@
+Reusability can be done in 2 ways:
+    1. include
+    2. roles
+
+
+ansible-galaxy init <role-name>
+
+    Directory Structure:
+
+        1. defaults
+            a. There is a main.yml file with the default variables used by a role
+            b. These variables are less priority i.e we can override them easily
+
+        2. vars
+            vars and defaults house variables, but variables in vars have a higher priority, which means that they are more difficult to override. Variables in defaults have the lowest priority of any variables available, which means they are easy to override. Placing packer_version in defaults instead of vars is desirable because now it is easier to override when you want to install an older or newer version of Packer:
+
+            Example:
+
+                ---
+                - hosts: all
+                  sudo: yes
+                  roles:
+                   - { role: "azavea.packer", packer_version: "0.7.0" }
+
+        3. files
+            files is where you put files that need to be added to the machine being provisioned, without modification. Most of the time, files in files are referenced by copy tasks.
+
+        4. Handlers
+            handlers usually contain targets for notify directives, and are almost always associated with services. For example, if you were creating a role for NTP, you might have an entry in handlers/main.yml for restarting NTP after a task finishes altering the NTP configuration file.
+
+        5. meta
+            meta/main.yml houses one of the biggest differences between includes from roles: metadata. The metadata of an Ansible role consists of attributes such as author, supported platforms, and dependencies. Most of this file is commented out by default, so I usually go through and fill in or uncomment relevant attributes, then delete anything else.
+
+            Role dependencies allow a role to include other roles as dependencies. For example, a role that defines a documentation server may depend upon another role that installs and configures a web server. Dependencies are defined in the meta/main.yml file in the role directory hierarchy. The following is a sample meta/main.yml file.
+
+            Example:
+
+                The following is a sample meta/main.yml file.
+
+                ---
+                dependencies:
+                  - role: apache
+                    port: 8080
+                  - role: postgres
+                    dbname: serverlist
+                    admin_user: felix
+
+        6. tasks
+
+        7. templates
+            templates is similar to files except that templates support modification as they are added to the machine being provisioned. Modifications are achieved through the Jinja2 templating language. Most software configuration files become templates.
+
+
+
+Playbook Objects:
+    1. Play
+    2. Role
+    3. Block
+    4. Task
+
+and for directives of the objects refer the link (https://docs.ansible.com/ansible/2.3/playbooks_directives.html)
+
+
+Ansible looks for the roles at the directories specified by the Ansible configuration setting roles_path, in order. This variable contains a colon-separated list of directories to search. The default value of this variable is:
+
+
+    Default roles path are:  ~/.ansible/roles:/usr/share/ansible/roles:/etc/ansible/roles
+
+
+References:
+    1. https://docs.ansible.com/ansible/2.3/playbooks_directives.html
+
+
