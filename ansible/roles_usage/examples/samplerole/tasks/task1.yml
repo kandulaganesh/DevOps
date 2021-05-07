@@ -1,0 +1,4 @@
+---
+- name: Task-1 From Sample Role
+  debug:
+    msg: Message from Task-1 in Sample Role

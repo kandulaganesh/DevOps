@@ -61,6 +61,10 @@ We can use pipes for passing variables/data as input to other commands, like
 
   - name: Setting host facts using complex arguments
     set_fact:
+
+Copy/pull files from one node to another:
+
+    https://www.middlewareinventory.com/blog/how-to-copy-files-between-remote-servers-ansible-fetch-sync
       one_fact: something
       other_fact: "{{ local_var * 2 }}"
       another_fact: "{{ some_registered_var.results | map(attribute='ansible_facts.some_fact') | list }}"
