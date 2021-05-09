@@ -1,0 +1,11 @@
+---
+- name: nested loops Play
+  hosts: master
+  become: True
+  tasks:
+    - name: nested loops task
+      debug:
+        msg: Item0 is {{ item.0 }} and item1 is {{ item.1 }}
+      with_nested:
+        - [ 'alice', 'bob' ]
+        - [ 'clientdb', 'employeedb', 'providerdb' ]

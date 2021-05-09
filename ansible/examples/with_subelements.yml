@@ -1,0 +1,24 @@
+---
+- hosts: master
+  become: True
+  vars:
+    family:
+      - surname: Smith
+        children:
+          - name: Mike
+            age: 4
+          - name: Kate
+            age: 7
+      - surname: Sanders
+        children:
+           - name: Pete
+             age: 12
+           - name: Sara
+             age: 17
+  tasks:
+    - name: Task for sub elements
+      debug:
+        msg: Item-1 {{ item.0.surname }} Item-2 is {{ item.1.name }}
+      with_subelements:
+        - "{{ family }}"
+        - children

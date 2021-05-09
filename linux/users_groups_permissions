@@ -23,6 +23,7 @@ Permissions:
 4 -> read
 2 ->  Write
 1 -> Execute
+0 -> Reset/Remove the permission
 
 To give both read and write, value is 4 + 2 = 6, so 6 is for both read and write
 To give read and execute, value is 5
