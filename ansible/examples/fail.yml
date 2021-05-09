@@ -1,0 +1,8 @@
+#Displays message in red color as Faile task
+---
+- hosts: all
+  become: True
+  tasks:
+    - name: First task
+      fail:
+        msg: Failed message

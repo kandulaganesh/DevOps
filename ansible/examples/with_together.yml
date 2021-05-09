@@ -1,0 +1,11 @@
+---
+- hosts: master
+  become: True
+  tasks:
+    - name: Tasks of with_together
+      debug:
+        msg: fist is {{ item.0 }} and second is {{ item.1 }} 
+      with_together:
+        - "{{ [1,2,3,4,5] }}"
+        - "{{ ['a','b','c','d','f'] }}"
+        

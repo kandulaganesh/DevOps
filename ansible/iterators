@@ -1,0 +1,18 @@
+with_items
+with_nested
+with_dict
+with_file
+with_fileglob
+with_together
+with_subelements
+with_sequence
+with_random_choice
+with_indexed_items
+
+
+
+Parallel:
+    with_together
+
+
+
