@@ -70,3 +70,6 @@ Copy/pull files from one node to another:
       another_fact: "{{ some_registered_var.results | map(attribute='ansible_facts.some_fact') | list }}"
 
 
+Besides, ansible_user is used when we want to specifiy default SSH user in ansible hosts file where as remote_user is used in playbook context.
+
+

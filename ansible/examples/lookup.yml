@@ -1,0 +1,10 @@
+---
+#lookup plugins to access data from outside sources (files, databases, key/value stores, APIs, and other services) within your playbooks.
+#lookups execute and are evaluated on the Ansible control machine
+#It retusn the data from data source like env,file, database,..
+- name: Loopkup Play
+  hosts: master
+  tasks:
+    - name: Lookup Task
+      debug:
+        msg: lookup o/p is {{ lookup('file','/root/dev_volume/DevOps/ansible/data_file') }}

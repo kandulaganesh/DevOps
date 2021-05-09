@@ -1,0 +1,15 @@
+---
+# Loop is for looping through list items, not the dictionary items
+- name: Loop example play
+  hosts: all
+  vars:
+    loop_items:
+       - item1
+       - item2
+       - item3
+  tasks:
+    - name: Loop task
+      debug:
+        msg: Item is {{ item }}
+      loop: "{{ loop_items }}"
+
