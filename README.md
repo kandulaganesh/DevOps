@@ -1,2 +1,2 @@
 # DevOps
-Have syntax and usage of tools
+Devops tools and their usage
