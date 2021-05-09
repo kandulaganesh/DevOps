@@ -122,9 +122,8 @@ Ways:
 
 
 
-We have "vars" section in plays, not in tasks section
 
-"vars", this directive can be used as option for "play" and "role", "can't use for tasks"
+"vars", this directive can be used as option for "play", "role", and "tasks"
 
 variables created using "vars" are play variables, irrelevent to where we create them, i.e
 
