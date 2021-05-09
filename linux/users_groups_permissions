@@ -1,0 +1,46 @@
+Users:
+
+sudo adduser testUser // For adding User, we also have "useradd" command for creating users which is same as adduser
+sudo userdel testUser // For deleting User
+/etc/passwd // This file contains all info abt users, and their home directories
+sudo passwd testUser // Used for changing the password for a user
+whoami // showing current user
+su <user-name> // switching user
+
+Groups:
+
+sudo groupadd <group-name> // cretaing the group
+sudo groupdel <group-name> // deleting the group
+sudo usermod -a -G <group-name> <user-name> // adding user to group
+sudo gpasswd -d <user_name> <new_group> // deleting user from group
+/etc/group // Contains list of groups
+
+
+Permissions:
+
+761 -> 7 is for Owner user permission for the file, 6 -> Owner Group permission for file, 1 -> Everybody else (other than owner and group)
+
+4 -> read
+2 ->  Write
+1 -> Execute
+
+To give both read and write, value is 4 + 2 = 6, so 6 is for both read and write
+To give read and execute, value is 5
+To give all permissions, value is 4+2+1=7
+
+chmod for giving permissions for a folder or file
+
+Usage: sudo chmod <permission> <file/folder>
+
+Example: sudo chmod 777 priviliged_file
+
+         sudo chmod 777 my_folder -R // recursively giving permissions for all folders and sub-folders
+
+Change the ownership for a file/folder
+
+sudo chown <user> <file/folder> // Change the owner of a file or folder
+
+sudo chown <user> <folder> -R // Change the owner for a folder and sub folders
+
+sudo chgrp <group-name> <file/folder> // Change the group permission for a file or group 
+sudo chgrp <group-name> <folder> -R // Recursively changing the group ownership for a folder and sub-folders
