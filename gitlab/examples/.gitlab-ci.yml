@@ -1,0 +1,45 @@
+
+image: centos:latest
+
+stages:
+  - quality
+  - compile
+  - publish
+
+before_script:
+  - echo "Setting up the environment, As every Job needs gcc, installing it"
+  - echo "<script for installing gcc>"
+
+quality:
+  stage: quality
+  tags:
+     - centos
+  script:
+     - pylint sample.py
+  allow_failure: true
+
+build_code:
+  stage: compile
+  tags:
+     - build
+  script:
+    - gcc sample.cc -o sample.exe
+  artifacts:
+    # Save these directories to GitLab and keep them for 2 weeks
+    paths:
+      - sample.exe
+    expire_in: 2 weeks
+  
+push_exec:
+  stage: publish
+  image: ubuntu:latest    # Image specific for this Job
+  dependencies:
+    - build_code
+  tags:
+    - push
+  script:
+    - push_executables.sh
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /@push/
+      - $CI_COMMIT_BRANCH =~ /master/

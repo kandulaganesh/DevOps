@@ -1,0 +1,27 @@
+image: <base docker image for all Jobs>
+
+# Inheriting the Jobs from projects
+include:
+  - project: <project-name>
+    file: <file-name>                  # This file will have Jobs
+
+
+stages:
+  - <stage-name>
+  - <stage-name>
+
+
+before_script:
+   - <script>           # Custom script That runs before "script" section in every Job
+
+<job-name>:
+  stage: <stage-name>
+  tags:
+   - <tags to tag Job>
+  script:
+   - <bash script>
+  artifacts:
+   paths:
+     - <artifacts path>        # These artifacts will be saved and will be loaded automatically in another Jobs
+
+
