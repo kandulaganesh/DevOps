@@ -1,0 +1,14 @@
+---
+# with_dict used for iterating through the dictionary elements
+- name: Play With_dict
+  hosts: all
+  vars:
+    dict_items:
+      key1: value1
+      key2: value2
+      key3: value3
+  tasks:
+    - name: with_dict Task
+      debug:
+        msg: Key is {{ item['key'] }} and Value is {{ item['value'] }}
+      with_dict: "{{ dict_items }}"

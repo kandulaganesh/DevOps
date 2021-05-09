@@ -1,0 +1,75 @@
+Collections are a distribution format for Ansible content. They can be used to package and distribute playbooks, roles, modules, and plugins.
+
+miscellaneous:
+
+1. install the roles using:
+
+    ansible-galaxy install <role-name> -p folder_path
+
+ 
+ Setting Up Host Aliases:
+
+     To use an alias, include a variable named ansible_host after the alias name, containing the corresponding IP address or hostname of the server that should respond to that alias:
+
+         server1 ansible_host=203.0.113.111
+        server2 ansible_host=203.0.113.112
+        server3 ansible_host=203.0.113.113
+        server4 ansible_host=server_hostname
+
+
+
+
+Adhoc:
+
+    An Ansible ad-hoc command uses the /usr/bin/ansible command-line tool to automate a single task on one or more managed nodes. Ad-hoc commands are quick and easy, but they are not reusable. 
+
+    ansible [pattern] -m [module] -a "[module options]"
+
+    example:
+        ansible all -i inventory -m ping
+
+    Target particular group in inventory:
+        ansible servers -i inventory -m ping
+
+
+
+
+role is nothing but a group of tasks
+
+For debug logs:
+
+    - name: Task-1 from Play-1
+      debug:
+        msg: "variable-1 from Play-1/Task-1 is {{ variable12 }}"
+
+
+
+group_by,add_host
+
+Above are used for creating the groups and adding hosts to groups
+
+Example:
+
+    - name: Create groups based on the machine architecture
+      ansible.builtin.group_by:
+        key: machine_{{ ansible_machine }}
+
+
+pipes:
+
+We can use pipes for passing variables/data as input to other commands, like
+
+  - name: Setting host facts using complex arguments
+    set_fact:
+
+Copy/pull files from one node to another:
+
+    https://www.middlewareinventory.com/blog/how-to-copy-files-between-remote-servers-ansible-fetch-sync
+      one_fact: something
+      other_fact: "{{ local_var * 2 }}"
+      another_fact: "{{ some_registered_var.results | map(attribute='ansible_facts.some_fact') | list }}"
+
+
+Besides, ansible_user is used when we want to specifiy default SSH user in ansible hosts file where as remote_user is used in playbook context.
+
+

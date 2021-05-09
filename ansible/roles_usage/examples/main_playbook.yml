@@ -1,0 +1,5 @@
+---
+- name: Playbook starting
+  hosts: all
+  roles:
+   - name: samplerole

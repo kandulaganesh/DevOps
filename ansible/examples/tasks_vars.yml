@@ -1,0 +1,14 @@
+---
+- name: Play
+  hosts: master
+  tasks:
+    - name: Task-1
+      debug:
+        msg: Task-1 msg is {{ var1 }}
+      vars:
+        var1: value1
+    
+    - name: Task-2
+      debug:
+        msg: Task-2 var is {{ var1 }}
+    # This will throw error as var1 is defined in Task-1 
