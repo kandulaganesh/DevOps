@@ -1,0 +1,69 @@
+1. set
+    A set is an unordered collection of items.
+    Every set element is unique (no duplicates) and must be immutable (elements cannot be changed).
+    Cannot be accessed by index
+    A set itself is mutable. We can add or remove items from it.
+    Although set is mutable, we cannot have mutable elements in the set. (We cannot change the elements of set)
+    a = {}
+    print(type(a)) // Dict
+    a = set()
+    print(type(a)) // Set
+
+
+2. list
+    mutable
+    Accessing using index
+
+3. dict
+    Unordered key-value data Elements
+    Keys must be unique and immutable
+
+4. tuple
+    A tuple is similar to list, Only difference is lists are mutable and tuples are immutable
+    Can be accessed using index
+    Data is immutable
+    Order is preserved
+
+Functions:
+
+    def hello(parameter1,parameter2):
+        '''
+            Description //docstring
+        '''
+
+I/O:
+
+    value=input("Enter value")
+
+    By default input() method will point to sys.stdin, which by default points to keyboard input stream
+
+    In the below example, we are making sys.stdin pointing to file stream
+
+    example:
+        with open('file_path.txt','r') as sys.stdin:
+            t = int(input())
+
+
+File:
+
+    file_stream=open("file_name","r")
+    file_stream.read()
+    file_stream.write("Hello")
+    file_stream.flush()
+    file_stream.close()
+    with open("text_file.txt","r") as file_stream:
+        data=file_stream.read()
+        print(data)
+
+
+Super()
+
+    In Class
+
+    The super() builtin returns a proxy object (temporary object of the superclass) that allows us to access methods of the base class.
+
+    Reference: https://www.programiz.com/python-programming/methods/built-in/super
+
+
+
+

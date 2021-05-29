@@ -1,0 +1,33 @@
+https://gist.github.com/mcastelino/c38e71eb0809d1427a6650d843c42ac2
+
+Examples:
+
+Consider a scenario where we want to send request to nginx docker container. Usually docker containers will have non-routable ip address.
+
+Follow below steps to make container reachable to external network using iptables
+
+Create a docker container:
+
+	docker run -d nginx:latest
+
+	Above command will create a docker container which will have a private ip and listens on port 80
+
+	There are many ways to make this container reachable to external network, few are
+
+		1. Port mapping using -p option
+		2. DNAT, overwrite the packet header using iptables
+
+	Command to change the packet header is, below command will change the destination ip and port details
+		
+                iptables -t nat -A PREROUTING -p tcp -d <host-ip> --dport <availabe-host-port> -j DNAT --to-destination <ContainerIp>:80
+
+
+Insertion Options:
+
+        -I  -> Insert rule at a particular position
+	-A  -> Append rule to the chain
+	-D  -> Delete rule from chain
+	-L  -> List the rules
+
+	iptables -t <table-name> -I <chain-name> <position-to-insert> .......
+
