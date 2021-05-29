@@ -11,7 +11,7 @@ miscellaneous:
 
      To use an alias, include a variable named ansible_host after the alias name, containing the corresponding IP address or hostname of the server that should respond to that alias:
 
-         server1 ansible_host=203.0.113.111
+        server1 ansible_host=203.0.113.111
         server2 ansible_host=203.0.113.112
         server3 ansible_host=203.0.113.113
         server4 ansible_host=server_hostname
@@ -71,5 +71,56 @@ Copy/pull files from one node to another:
 
 
 Besides, ansible_user is used when we want to specifiy default SSH user in ansible hosts file where as remote_user is used in playbook context.
+
+
+Ansible Basic Modules:
+
+    1. command
+    2. file
+        a. file creation
+        b. Directiory creation
+    
+    3. copy
+        a. copy files from controller to remote machines
+
+    4. service
+        a. manages systemd
+
+    5. fetch
+        a. copy files from remote machines to controller
+
+    6. yum
+        a. Package manager
+
+    7. env
+        a. Allows you to query the environment variables available on the controller when you invoked Ansible.
+
+
+
+Ansible Basic Directives:
+
+
+    1. remote_user
+        a. example: remote_user: root
+
+    2. become
+        a. become: true
+
+
+Adhoc,
+
+    It uses ansible , not the ansible-playbook, i.e 
+
+    syntax:
+        ansible [pattern] -m [module] -a "[module options]"
+
+    Example:
+
+    ansible hostname -a "/sbin/reboot"
+
+    ansible raleigh -m ansible.builtin.shell -a 'echo $TERM'
+
+    ansible webservers -m ansible.builtin.yum -a "name=acme state=latest"
+
 
 
