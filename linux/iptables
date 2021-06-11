@@ -1,4 +1,4 @@
-https://gist.github.com/mcastelino/c38e71eb0809d1427a6650d843c42ac2
+https://gist.github.com/kandulaganesh/c4fcf3504a60e3f59d48915b36bcf938
 
 Examples:
 
@@ -31,3 +31,5 @@ Insertion Options:
 
 	iptables -t <table-name> -I <chain-name> <position-to-insert> .......
 
+References:
+1. https://www.slideshare.net/garyachy/understanding-iptables
