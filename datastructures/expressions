@@ -1,0 +1,21 @@
+Infix, Prefix and Postfix Expressions
+
+Classify the expression based on the operator position.
+
+B * C, This type of notation is referred to as infix since the operator is in between the two operands that it is working on.
+
+Order of Evaluation,
+
+   Each operator has a precedence level. Operators of higher precedence are used before operators of lower precedence. The only thing that can change that order is the presence of parentheses. The precedence order for arithmetic operators places multiplication and division above addition and subtraction. If two operators of equal precedence appear, then a left-to-right ordering or associativity is used.
+
+Change of Operator Position:
+
+Changes to the position of the operator with respect to the operands create two new expression formats, prefix and postfix. Prefix expression notation requires that all operators precede the two operands that they work on. Postfix, on the other hand, requires that its operators come after the corresponding operands.
+
+In pre-fix and post-fix, parentheses are no longer needed, as there is no ambiguous with respect to the operands that they work on.
+
+The order of operations within prefix and postfix expressions is completely determined by the position of the operator and nothing else.
+
+References:
+
+1. https://runestone.academy/runestone/books/published/pythonds/BasicDS/InfixPrefixandPostfixExpressions.html
