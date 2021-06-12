@@ -1,9 +1,14 @@
-Creates a process having It's own namespaces i.e process,network,ipc....
-    unshare --mount --pid --net --uts --ipc --fork chroot MyContainer/centos/ /bin/bash
+Create Docker container manually:
 
-Above not only creates namespaces but also the rootfs. So inside the centos folder we can have a filesystems that will get mounted to new rootfs.
+   Creates a process having It's own namespaces i.e process,network,ipc....
+       unshare --mount --pid --net --uts --ipc --fork chroot MyContainer/centos/ /bin/bash
 
-It helps in creating container(Isolated sandbox).
+   Above not only creates namespaces but also the rootfs. So inside the centos folder we can have a filesystems that will get mounted to new rootfs.
+
+   It helps in creating container(Isolated sandbox).
+
+   Reference:
+     1. https://www.youtube.com/watch?v=sK5i-N34im8
 
 Virtual Ethernet Pair:
     ip link add name hifg type veth peer name cifg
