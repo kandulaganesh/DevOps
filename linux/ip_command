@@ -65,6 +65,18 @@ Route:
             after "dev" is interface through which packets leave or come to the system
 
 
+Less frequently used commands:
+
+1. ip link add name <interface-1> type veth peer name <interface-2>
+     Creates a virtual ethernet pair
+2. ip link set <interface-name> netns <PID>
+     Attaches interface to a namespace
+3. ip link add name <bridge-name> type bridge
+     Creates a bridge
+4. ip link set dev <interface-name> master <bridge-name>
+     Attaches interface to a bridge
+    
+
 
 References:
 
