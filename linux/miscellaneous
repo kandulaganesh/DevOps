@@ -1,0 +1,26 @@
+Create Docker container manually:
+
+   Creates a process having It's own namespaces i.e process,network,ipc....
+       unshare --mount --pid --net --uts --ipc --fork chroot MyContainer/centos/ /bin/bash
+
+   Above not only creates namespaces but also the rootfs. So inside the centos folder we can have a filesystems that will get mounted to new rootfs.
+
+   It helps in creating container(Isolated sandbox).
+
+   Reference:
+     1. https://www.youtube.com/watch?v=sK5i-N34im8
+
+Virtual Ethernet Pair:
+    ip link add name hifg type veth peer name cifg
+
+ip commands:
+
+ip link set cifg netns <PID>
+
+ip link set hifg master docker0 up
+
+ip link set cifg name eth0 up
+
+ip addr add 10.0.10.100/24 dev eth0
+
+

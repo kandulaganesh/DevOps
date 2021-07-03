@@ -1,0 +1,84 @@
+1. link
+    Manage Interfaces
+2. address
+    Manage Address
+3. route
+    Manage Route
+
+Format:
+
+    ip <object> <operation> <options>
+
+        Object can be 
+            link,addr,route
+
+        Operation can be
+            add,del,show,ls,set
+
+"show" and "ls" are interchangable words, used for displaying the network objects
+
+Link:
+
+    1. ip link show
+       ip link show dev <device>  
+            It displays the interface(s)
+
+    2. ip link ls
+            Displays all interfaces
+
+    3. ip -s link  
+       ip -s link ls <interface> 
+               Get more info abt the interfaces
+
+    4. ip link set <interface-name> up/down
+    6. ip link add <interface-name> type <interface-type>
+    7. ip link del <interface-name>
+
+
+
+Address:
+
+    1. ip addr add <ip>/<prefixed-length> dev <interface>
+    2. ip addr show
+    3. ip addr del <ip>/<prefixed-length> dev <interface>
+
+
+Route:
+
+    1. ip route show
+    2. ip route add
+        ip route add <destination-subnet>/<destination-prefixed-length> via <gateway> dev <interface-name-to-where-packets-go>
+    3. ip route del
+        ip route del <destination-subnet>/<prefixed-length>
+
+
+    Example:
+
+        [root@dev-machine rootfs]# ip route show
+        default via 10.144.75.254 dev ens160 proto dhcp metric 100
+        10.144.72.0/22 dev ens160 proto kernel scope link src 10.144.75.29 metric 100
+        169.254.169.254 via 10.144.72.1 dev ens160 proto dhcp metric 100
+        172.17.0.0/16 dev docker0 proto kernel scope link src 172.17.0.1 
+
+            Above first column of ip address set is Destination subnet, if it is default, then it is 0.0.0.0
+            ip address after "via" is gateway
+            after "dev" is interface through which packets leave or come to the system
+
+
+Less frequently used commands:
+
+1. ip link add name <interface-1> type veth peer name <interface-2>
+     Creates a virtual ethernet pair
+2. ip link set <interface-name> netns <PID>
+     Attaches interface to a namespace
+3. ip link add name <bridge-name> type bridge
+     Creates a bridge
+4. ip link set dev <interface-name> master <bridge-name>
+     Attaches interface to a bridge
+    
+
+
+References:
+
+    1. https://www.tecmint.com/ip-command-examples/
+    

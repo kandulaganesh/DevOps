@@ -1,0 +1,61 @@
+SQL is a standard language for accessing and manipulating databases.
+
+CREATE DATABASE new_database; (Creates DataBase)
+
+use new_database; (Switch to database)
+
+show DATABASES; (List all Databases)
+
+select database(); (Current database)
+
+create table employees ( emp_id int, emp_name varchar(255), designation varchar(255), experience int); (Create table)
+
+show tables; (List all tables in current database)
+
+describe employees; (Describe i.e show all columns)
+
+alter table employees drop column designation; (Delete a column from table)
+
+alter table employees add column designation varchar(255); (Add a column into table)
+
+insert into employees (emp_id, emp_name, experience, designation) values (1, 'Ganesh', 2, 'Engineer'); (insert entry into table)
+
+select distinct designation from employees; (List distinct columns)
+
+select * from employees as alias_name; (Table alias name)
+
+select count(*) from (select distinct designation from employees) as temp1;
+
+delete from employees where emp_id=4; (Delete entry from table)
+
+update employees set designation='Mentor',experience=6 where emp_id=4; (Update existing entries)
+
+
+Conditions to 'Where' Clause:
+    =,
+    >,
+    <,
+    <=,
+    >=,
+    <>(Not equal),
+    in(To specify multiple possible values for a column),
+    between (Between a certain range)
+
+Operations:
+
+    AND (SELECT column1, column2, ... FROM table_name WHERE condition1 AND condition2 AND condition3 ...;)
+    OR (SELECT column1, column2, ... FROM table_name WHERE condition1 OR condition2 OR condition3 ...;)
+    NOT (SELECT column1, column2, ... FROM table_name WHERE NOT condition;)
+
+
+
+Functions:
+
+    "count" function
+        example: select count(*) from employees;
+
+    "sum" function
+        example: select sum(experience) from employees;
+
+
+
