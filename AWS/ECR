@@ -1,0 +1,20 @@
+Fully managed docker container registry that makes it easy for evelopers to store, manage and deploy the docker container images.
+
+To get the docker 
+
+To login to the ECR through CLI, use following
+
+1. If AWS CLI v1 use following command
+
+	$(aws ecr get-login --no-include-email --region us-east-1)
+
+2. If CLI version is v2 then use this command
+
+	aws ecr get-login-password | docker login --username AWS --password-stdin <registry>
+
+
+Usually registry format should be "aws_account_id.dkr.ecr.region.amazonaws.com"
+
+References:
+
+	1. https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html

@@ -1,0 +1,43 @@
+An Optional layer of security that acts as a firewall for controlling traffic in and out of "subnets".
+
+NACL acts as a firewall at the subnet level.
+
+Evaluation of rules happen based on the rule number.
+
+In security groups everything is denied by default and we have an option of allowing the traffic, no deny option.
+
+But here in NACL, we have both of Allow and Deny option, unlike SG where we have only allow rules.
+
+NACL allows all inbound and outbound traffic.
+
+NACL's are stateless. (Incoming rules will not be applied for outgoing)
+
+
+NACL's are associated with the subnets.
+
+
+They only work in the edges of network....
+
+In Security Group we can give both specific ip-address or a range of ip-address, but in NACL's we have to give specific ip-address
+
+SecurityGroup can have a specific-ipaddress or range of ip-address or another security group as source
+
+
+Security Groups will analyze all the rules, i.e if any rule is ALLOW, the traffic will be directed.
+
+NACL's will have priiorities to the rules(Less number will have high priority), Rule with high priority takes over the low priority.
+
+Rules include only ip-address.
+
+Can have both ALLOW and DENY Rules
+
+Security Group can have only ALLOW Rules
+
+By default NACL's allow both inbound and outbound rules
+
+Security Group is statefull and NACL's are stateless
+
+A subnet can have only one NACL's, but a NACL can be attached to many subnets
+
+
+

@@ -1,0 +1,3 @@
+1. Create a NACL, and add a rule of both ALLOW/DENY, check whether Instances are acceptng the traffic. (usually NACL's follow priority based rules)
+
+2. Attach two security groups to a EC2 instance, one will allow and other will deny... now what will happen to traffic ?

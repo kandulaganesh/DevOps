@@ -1,0 +1,113 @@
+SNS is a fully managed pub/sub messaging service.
+
+
+Pub-Sub is like a, publisher will publish the information and channel will send data to all subscribers.
+
+Here channel is SNS.
+
+SNS can populate the element into SQS as well.
+
+it can trigger lambda functions, web hooks.
+
+Additionally it can fanout notifications to end users using mobile push, SMS and email.
+
+
+AWS Application / AWS Resources  <-- AWS Cloud Watch <-- SNS --> {SMS, push, lambda fuction, SQS}
+
+
+AWS Application / AWS Resources  <-- AWS Cloud Watch (This will publish to) <-- SNS --> (Will send a notification to all subscribers) {SMS, push, lambda fuction, SQS}
+
+
+Advantages of SNS/Pub-Sub:
+
+	1. Decoupling the subscriber i.e publisher need not know who is subscriber.
+	2. One message can be sent to many subscribers.
+	3. Compatable with many AWS services.
+
+
+Publishers don't care of subscriber's protocol.
+
+SNS will automatically format the message according to the receiver or subscriber protocol.
+
+We can encript using KMS.
+
+
+Subscriber will subscribe to one topic and one protocol.
+
+Following endpoints are supported:
+
+1. SMS
+2. SQS
+3. App push (Push Notifications)
+4. Lambda => Triggers lambda function.
+5. Email
+6. http and https web hooks
+
+
+We can send messages to different Amazon SQS provides support for dead letter queues. A dead letter queue is a queue that other (source) queues can target for messages that can’t be processed successfully. You can set aside and isolate these messages in the dead letter queue to determine why their processing did not succeed.
+
+
+
+Creating a Dead Letter Queue
+A dead letter queue is created the same way as a regular queue, but it has the following restrictions:
+
+A dead letter queue must be the same type of queue (FIFO or standard) as the source queue.
+
+A dead letter queue must be created using the same AWS account and region as the source queue.subscribers based on feilds in messages(Message filtering).
+
+
+We can define filtering policy in SNS and send the messages to the consumers.
+
+
+
+
+
+
+In SQS only one receiver can receive message at a time, broad cast is not possible.
+
+
+If we want to send message to multiple customer's, then use SNS
+
+
+upto 10Million subscriptions to a topic
+
+also UPTO 100000 topics
+
+Subscribers can be:
+
+	1. SQS
+	2. Email
+	3. HTTP/HPPS
+	4. SMS Message
+	5. Mobile Notifications
+	6. .....
+
+
+If we want to use FanOut then go for SNS
+
+
+FIFO Topic:
+
+	1. Ensures messages are delivered in order
+
+
+SNS FIFO have same features as SQS FIFO
+
+	1. Ordering of messages
+	2. De-duplication ID
+	3. content based 
+
+	For SNS FIFO Topics, only SQS FIFO can be the subscriber, not other's
+
+
+Message filtering:
+
+	JSON Policy used to filter messages sent to SNS Topics subscriptions
+
+	example:
+
+		Send only Cancelled messages to SQS_Queue_1
+		Send only Placed messages to SQS_Queue_2
+
+
+

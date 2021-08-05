@@ -1,0 +1,6 @@
+Think of CloudWatch Events(crontab or infrastructure change) and CloudWatch alarms (metrics)
+
+DynamoDB uses Streams for trigerring the lambda functions.
+
+Forum where questions are answered:
+	https://forums.aws.amazon.com/forumfilter.jspa?forumID=58&start=0&filter=answered

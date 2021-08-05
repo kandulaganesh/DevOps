@@ -1,0 +1,271 @@
+Amazon Virtual Private Cloud (Amazon VPC) is a service that lets you launch AWS resources in a logically isolated virtual network that you define. You have complete control over your virtual networking environment, including selection of your own IP address range, creation of subnets, and configuration of route tables and network gateways. You can use both IPv4 and IPv6 for most resources in your virtual private cloud, helping to ensure secure and easy access to resources and applications.
+
+
+
+
+Provision a logically isolated section of the AWS Cloud where you can launch AWS resources in a virtual network that you define.
+
+
+VPCs are associated to a single region. You cannot span a VPC across regions, nor can you peer with a VPC in another region.
+
+
+You can create upto 5VPC per region.
+
+Each Region comes with default VPC.
+
+Each VPC have 200 Subnets
+
+Can use both IPv4 and IPv6
+
+
+VPC Peering connection allows us to have a communicaton between instances in different VPC.. makes it feel like they are in same N/W.
+
+
+VPC Peering, connect accross different regions.
+
+Peering Uses Star Configuration (1 Central VPC and 4 other VPC)
+
+No Transitive Peering. i.e (VPC-A <--> VPC-B <---> VPC-C)
+
+	Above communication will not happen b/w VPC 'A' and 'C' as Transitive peering will not happen.
+
+	Need to have one to one connect to immediate VPC
+
+In Peering, No Overlapping CIDR
+
+
+RouteTables:
+
+	1. Used to determine where n/w traffic is directed.
+	2. Each Subnet must be assiciated with a RouteTable
+	3. Multiple subnets can be associated to a RouteTable
+
+
+	Instance  -> RouteTable -> Router -> IGW -> The Internet
+	<- Subnet ->
+	<------- VPC  ------------------------>
+
+
+
+InternetGateway:
+
+	Allows VPC access to the internet.
+	provide a target in VPC RouteTables for internet access
+	perform NAT for instance that have been assigned public ipv4 address.
+
+
+Baston/JumpBox:
+	
+	Bastons are EC2 Instances, which are security harden. They are designed to help you gain access to your EC2 Instances via SSh/RCP that are in private subnet.
+
+	Also know as JumpBoxes as they jump from one box to another box.
+
+	In this our apps/Instances will be on private subnet, and Baston will be on public subnet.
+
+	SystemManager's Sessions manager will replace the need of JumboBox
+
+
+IF the instances are in private subnet, we use bastonBox, but we use NAT gateway as well.. but we use this for configuration and security updates.
+
+
+Direct Connect:
+
+	AWS DirectConnect is an AWS solution for establishing the dedicated network connection from on-premise location to AWS.
+
+
+On Premises:
+
+	Communication between the on-premise Devises and the AWS via...
+
+		1. AWS VPN
+			Site-to-Site VPN Connection.. effectively a VPN Tunnel will be there, typically running over the internet connecting the on-premise and the AWS
+
+			On Premise Stuff *(Customer Gateway)  <---> *(Virtual private Gateway) AWS Stuff
+				Customer Gateway is the end-point for the VPN Connection for the On-Premise 
+				Virtual Private Gateway will the end-point for the AWS for VPN Connection...
+				Will go over internet.
+				Virtual Private Gateway is associated to VPC.
+
+		2. AWS Direct Connect
+			That a direct physical connectivity into AWS Backbone
+			Private N/W, secure and fast
+			U can use this if we want to connect on-prem infra to multiple VPC Zones... 
+
+
+		Above both don't have access to VPC Endpoints.
+
+
+VPC EndPoints:
+
+	Without VPC EndPoints, If we want to Connect a instance in VPC to S3 Bucket.. we have to go via InternetGateway.. i.e through internet
+
+	With VPC Endpoints, It allows us to privately connect your VPC to other AWS Services, and VPC endpoint services.
+
+	Eliminates the need of IGW, VPN, and NAT Device.
+
+	There are two types of VPC EndPoints:
+
+		1. Interface EndPoints
+			They are Elastic Network Interfaces with a private IP address. They serve as an entry point for traffic going to a supported service.
+			It is supported many services.
+			
+		2. Gateway EndPoints
+			A Gateway EndPoints is a gateway that is a target for a specific route in your route table, used for traffic destined for a supported AWS Service.
+
+			This is Supported by only 2 Services: S3 and DynamoDB
+
+	Note:
+		Site-to-Site VPN and Direct Connect can't have access to VPC Endpoints.
+
+
+
+
+By default DNS Hostname is disabled. So we will not get the DNS hostname i.e url for accessing the instances.
+
+
+By default AWS gives a default VPC.
+
+Private Subnet means Strictly private.. no any public ip address.
+
+
+VPC Flow Logs is a feature that enables you to capture information about the IP traffic going to and from network interfaces in your VPC. Flow log data can be published to Amazon CloudWatch Logs or Amazon S3. After you've created a flow log, you can retrieve and view its data in the chosen destination.
+
+Flow logs can help you with a number of tasks, such as:
+
+Diagnosing overly restrictive security group rules
+
+Monitoring the traffic that is reaching your instance
+
+Determining the direction of the traffic to and from the network interfaces
+
+Flow log data is collected outside of the path of your network traffic, and therefore does not affect network throughput or latency. You can create or delete flow logs without any risk of impact to network performance.
+
+
+Flow Traffic will not contain the payload... , They only contain the description, addressing info... 
+
+	Like what all traffic is blocked
+	What all traffic is Allowed
+
+VPC Peering....
+	   VPC Peering Symbol:
+
+	   ^
+	   |
+	<- * ->
+	   |
+	   v
+
+	   Fully private IP connectivity between two VCP's
+
+
+
+Communication B/W VPC's happen in following way:
+
+	1. VPC Peering
+	2. Transit Gateway
+		It has it's own routing table
+
+		But all VPC's and Transit Gateway should be on same region.
+
+
+	We can't have multiple VPC Peering to a VPC (max of 125)
+
+	So to avoid the mesh VPC Peering.. We use Transit Gateway
+
+
+If Target is "local".. then we can communicate with all devices inside the VPC... (Inter routing table communication also)
+
+At the end, all the services(mostly) we create like EC2.. compute machines will be there in VPC only... no such kind of like create EC2 in Non-VPC
+
+Concepts:
+
+	1. VPC, Subnets, IGW, NAT Gateways
+	2. Security Group, NACL, VPC Flow Logs
+	3. VPC Peering, VPC Endpoints
+	4. Site to Site VPN and Direct Connect
+
+
+VPC is a regional resource.
+
+Subnet is Zone specific.
+
+VPC will have a CIDR... and each subnet will get subnet of ip CIDR from the VPC CIDR.
+
+NAT Gateway is managed by AWS.. but NAT instances are managed by Us.
+
+NAT Gateway or NAT Instances should be in Public subnet.
+
+A NAT Gateway (as well as a NAT Instance, for what it's worth) must be in a public subnet because only devices on public subnets can actually use a public IP address.
+
+
+NACL's have both ALLOW and DENY Rules.
+
+In Security Group we can give both specific ip-address or a range of ip-address, but in NACL's we have to give specific ip-address.
+
+
+SecurityGroup can have a specific-ipaddress or range of ip-address or another security group as source
+
+
+Security Group evaluates all rules before deciding whether to allow traffic.
+
+Where as NACL's process rules in number order when deciding whether to allow traffic.
+
+SecurityGroup can have a specific-ipaddress or range of ip-address or another security group as source
+
+Subnet allows you to partition your network inside the VPC. 
+
+Ingress:
+
+	Inbound Traffic
+
+Engress:
+	Outbound Traffic
+
+
+As long as the VPCs are not going to be peered - enabling direct VPC-to-VPC IP communication - you can re-use the same IP scheme as you desire. If resources in VPC A only communicate with VPC B via the internet, then they will never see each other's internal IP scheme. Remember, VPCs are using a private IP addresses that the internet will never see, and public resources in different VPCs will never be assigned the same public IP addresses from AWS.
+
+
+
+
+
+VPC FlowLogs:
+
+	1. Captures all the traffic flowing through interfaces.
+	2. VPC Flowlogs
+	3. Subnet Flowlogs
+	4. ENI Flowlogs
+
+	It also captures the logs of AWS managed services... (like ELB, Elastic cache service)
+
+VPC Flowlogs goto S3/CloudWatch Logs.
+
+VPC Peering is not transitive.
+
+VPC EndPoints:
+
+	Helps in connecting VPC to other AWS Services.
+
+	We use this.. so that VPC don't have to go over internet for internet access.
+
+	1. VPC EndPoint Gateway
+		a. Only for S3 and DynamoDB
+		b. VPC Endpoints are limited to a VPC (Region specific)
+	2. VPC Endpoint interface
+		a. Can be used for all.
+
+How to connect VPC with the on-premise devices
+
+	1. Site to Site VPN
+		Connect an On premise VPN to AWS
+		Goes over the public internet
+	2. Direct Connect
+		This is Physical connection (No internet, secure and fast)
+
+	Both Site to Site VPN and Direct Connect cannot access the EndPoints. i.e Using EndPoints we cannot access the On-premise infra
+
+
+NAT Instances are self managed, NAT Gateway are AWS managed
+
+
+Reference:
+	1. https://aws.amazon.com/blogs/architecture/one-to-many-evolving-vpc-design/

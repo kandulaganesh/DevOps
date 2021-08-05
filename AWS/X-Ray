@@ -1,0 +1,154 @@
+Helps developers to analyze and debug applications utilizing micro service architecture.
+
+X-Ray is a distributed Tracing system or Performance Montoring System.
+
+
+In Microservices architecture, we have many services, how to manage and debug those many services.. that is why we have X-ray
+
+
+X-Ray:
+1. Distributed Tracing (More related to performance i.e what cause the poor performance)
+2. Performance Monitoring ()
+
+
+X-Ray is a Distributed Tracing System, Collects data about requests that your application serves.
+
+We can view,filter the collected data to identify the issues.
+
+Not only abt the requests that application receive... but also the calls that application makes to the down stream AWS Resources.
+
+
+X-Ray Architecture...
+
+	X-Ray Console <- X-Ray API <- X-RAY Daemon <- X-Ray SDK 
+						|			|
+						|___< Other Clients (AWS ClI, AWS SDK)
+
+
+	Daemon will buffer the info and we get that using Api (SDk wll send to Daemon using UDP Traffic)
+
+
+
+	X-Ray Provides:
+
+		1. Interceptors => add to your to trace incoming http requests
+		2. Client Handlers => to instrument AWS SDK Clients that your application uses to call other AWS services.
+		3. An HTTP Client => to use to instrument calls to other internal and external HTTP Web services.
+
+Instrument:
+
+	The ability to monitor or measure the level of application performance, to diagnose the errors, and to write trace information.
+
+
+
+AWS X-Ray receives data from services as segments.
+
+X-Ray then groups segments that have a common request into traces.
+
+and X-ray will process the traces to generate the service graph that provides the visual representation of your app.
+
+
+
+Components in X-Ray are:
+
+1. Segments
+2. Sub-Segments
+3. Service Graph
+4. Traces
+5. Sampling
+6. Tracing Header
+7. Filter Expressions
+8. Groups
+9. Annotations and MetaData
+10. Errors, Faults and Exceptions
+
+
+Service Graph:
+
+	Shows the client, front-end and back-end services.
+
+	Use for identifying the Bottle-neck, latency spikes.. and other issues.
+
+
+
+Segments:
+
+	1. hostname, ip address 
+	2. Request method 
+	3. Response
+	4. issues that occurs
+
+SubSegments:
+
+	1. More granular information i.e more downstream call's app make to fullfill the request.
+	2. Contain additonal information like calls to AWS services.. 
+
+
+Visual analysis of our application
+
+Advantages:
+	1. Find Bottle necks
+	2. Understand dependencies in micro service architecture
+	3. Find errors and requests
+
+
+How to enable X-Ray:
+
+	1. Code must import X-Ray SDK
+		This will capture the requests
+	2. Install the X-Ray Daemon which will intercept the packets
+
+How it works:
+
+	  ( Application Code + X-Ray SDk ) ---> X-Ray daemon  <-------> X-Ray
+	< ----------- On our machine ------------------------>
+
+Why we need to Use:
+
+1. Debugging
+	X-Ray helps you locate the sources of bugs by aggregating errors, faults, and exceptions. Powerful search capabilities help you pinpoint issues.
+2. Tracing
+	X-Ray collects timing and response data needed to identify high-latency services, bottlenecks, and throttling in a microservices architecture.
+3. Service Map
+	X-Ray creates a map of services used by your application to provide you with a view of connections among clients, front-end service, and downstream services.
+
+
+How to enable X-Ray in beanstalk:
+
+	1. through eb extensions i.e .ebextensions/x-ray-daemon.config
+
+Based on calls we create service MAP
+
+Show the exceptions/errors
+
+Also check and analyze the requests, latency of requests
+
+
+X-Ray Instrumentation:
+
+
+
+In ECS:
+
+	In ECS we can run X-Ray daemon in 2 ways:
+		1. Daemon
+			Daemon means running on all EC2 instances as standardalone docker container
+		2. SideCar
+			It will be running along with the application container i.e Every container will have a X-Ray daemon
+
+		daemon will be running on Port 2000 UDP
+
+	We will be running X-Ray Daemon as docker container on all Instances.
+
+X-ray lets you to analyze and visualize the cross account services.
+
+Also X-Ray helps us in seeing application erros, number of requets coming, of which how many are failure and success 
+
+With tracing,
+	We can check each request, it is success or failure, if it is failure, what is the error
+
+
+References:
+
+1. https://aws.amazon.com/xray/faq
+2. https://docs.aws.amazon.com/xray/latest/devguide/xray-console-sampling.html

@@ -1,0 +1,25 @@
+Transpiler: It turns one source code to another
+
+CDK transpiles into CloudFormation Templates
+
+
+SAM:
+
+	1. A CloudFormation MACRO
+	2. An extension to CloudFormation that lets you define serverless applications.
+	3. It is AWS CLI as well
+
+	Helps in define and deploy server less applications
+
+	CloudFormation allows us to use SAM macro using "transform" attribute
+
+	Example:
+
+		Transform: 'AWS::Serverless-2016-10-31'
+
+	SAM gives us following resource types in CloudFormation template:
+
+		1. AWS::Serverless::Function
+			Creates an AWS Lambda function, an AWS Identity and Access Management (IAM) execution role, and event source mappings that trigger the function
+		2. AWS::Serverless::API
+		3. AWS::Serverless::SimpleTable

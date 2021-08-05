@@ -1,0 +1,243 @@
+A managed relational database service. Supports multiple SQL Engines, easy to scale , backup..
+
+Supports 6 types of RDS Engines:
+
+	1. Amazon aurora
+	2. MySql
+	3. MarinaDB
+	4. Postgresql
+	5. Oracle
+	6. Microsoft SQl server
+
+
+RDS uses EBS storage.
+
+RDS uses SSD
+
+RDS have automated backups.
+
+Can Encrypt Data.. (KMS)
+
+Two types of Backups... 
+
+	1. Automated Backups
+		a. Stored in S3
+	2. Manual Snapshot
+	
+
+We can create read replica's.. which will have permission for read only.. , used to improve the primary RDS performance.
+
+
+RDS is self managed.. that means we cannot SSH 
+
+It is managed database. that use sequel as database query language.
+
+sequel is a structured language
+
+We can setup multiAZ
+
+Storage is backed by EBS.
+
+Backups are enabled automatically...
+
+Transactional logs are also backedup
+
+Automated backups.. retention period is 7Days (can be increased to 35Days)
+
+We can have snapshots as well.. but DB snapshots are manual process and They long as long as we want
+
+RD is a specific to region
+
+RDS:
+	1. RDS Read Replicas for read scalability...
+		a. We can create upto 5readReplicas
+		b. With AZ, Cross AZ, and Cross Region
+		c. Replication happens Async (Asyncronous.. i.e eventual consistency)
+		d. Replicated Database can be promoted to their own Database... (i.e it can become main DB)
+		e. Once we promote the Replicated Database to it's own DB.. it will have it's own lifecycle.
+		f. ReadReplicas for only read, not Insert,Update,Delete
+		g. If we have ReadReplicas in different AZ's... data network costs will happen
+	2. RDS Multi AZ
+		a. Purpose is Disaster recovery
+		b. Here we have Master and slave DB, slave get updated syncronously...
+		c. there will no be any read/write requests from appliactions..
+		d. If master got fail, then slave becomes master.
+		e. Not used for scaling..
+		g. We can setup the readreplica's in this Multi AZ's
+
+Security:
+
+1. At rest Encryption (Encrypting the stored data)
+	encrypt the master and read replicas
+	If master is not encrypted, read replicas cannot be encrypted
+	Transperent Data Encryption available for SQL Server and Oracle
+2. Inflight Encryption
+	SSl certificates used to encrypt the inflight data.
+	To force clients to use SSL certs 
+		use ParameterGroups for PostGreSql
+		use SQl query for MySQL
+
+Encryption Opeartions:
+
+1. If DataBase is un-encrypted, then snapshot is also un-encrypted
+2. If Database is encrypted , the snapshot is also encrypted
+
+
+Aurora:
+
+1. technology from AWS
+2. postgre and mysql both are supported for aurora
+3. Aurora storage will increase automatically from 10GB to 64TB
+4. Aurora can have 15Replicas, while mySQL have 5, and replication process is high
+5. Aurora do not support master-slave, instead it supports master and replica's, if master is down, replica will be master
+6. WriterEndpoint always point to master... i.e if master fails, then it will automatically point to new master
+7. Aurora supports 15replicas... for tracking the replica's there is "ReaderEndpoint" which acts as a loadbalancer.. which will send traffic to all replica's
+8. Automatic failover
+9. Supports Backtrack... we can bring back the DB state how it was in yesterday 05PM
+
+
+Aurora Serverless:
+1. Good for infrequent, intermitent,unpredictable workloads
+2. No capacity planning, pay-per-use
+
+
+
+Global Aurora:
+1. Cross region read replicas
+2. Promoting another region
+
+
+Multi AZ keeps the same connection string regardless of which database is up. Read Replicas imply we need to reference them individually in our application as each read replica will have its own DNS name
+
+
+We can't do SSH directly.
+
+Automatic backups are enabled.
+
+For read scalability:
+
+	Upto 5 read replicas
+
+	Cross AZ, Cross region...
+
+	Replication is ASYNC... so reads are eventual consistent...
+
+
+	Applications must update the connection string to leverage read replica's
+
+	Replica's can be promoted to their own DB.
+
+
+	Network cost happens when replica's happen to DB in different AZ/Region
+
+
+HighAvailability
+
+	SYNC Replication
+
+	One DNS name - automatic failover to standby
+
+	No manual intervention in apps.
+
+	Not used for scaling
+
+
+Security:
+
+	If master is not encrypted, read replicas also cannot be encrypted.
+
+	InFlight Encryption
+
+		PostgreSQL: rds.force_sql=1
+		MYSQL: incorporate in the sql query.
+
+Encryption:
+
+	Snapshots of Unencrypted RDS are unencrypted
+
+	Snapshots of encrypted RDS are encrypted
+
+How to convert un-encrypted EDS to Encrypted RDS
+
+	Create a snapshot of the un-encrypted database
+	Copy the snapshot and enable the encryption for the snapshot
+	Restore the database from the encrypted snapshot
+	migrate application to the new database and delete the old database.
+
+
+Aurora is Serverless
+
+Global Aurora:
+
+	Aurora cross region replica's
+
+
+RDS Supports max of 5 Read replicas, within AZ, cross AZ, or cross Region (Replicas have ASYNC replication)
+
+We can promote Replica as it's own DB
+
+EVery Replica has own url, so We have to configure Application to use different connection string
+
+RDS Multi AZ (Disaster Recovery), active and standby should be in same region
+
+RDS Multi AZ supports Read replica's.
+
+
+RDS is provisioned, i.e We choose how much storage is needed, also we mention threshold value of storage
+
+
+We can connect to RDS using
+
+	1. master credentials
+	2. IAM managed users
+
+If master is not encryped, then we can't encrypt read replicas
+
+TDE (Transperent Data Encryption) available for Oracle, SQL server.
+
+INFlight Encryption:
+
+	1. While connecting to database, provide the certificates
+	2. We can use SSL certificates for encryption
+
+To enforce SSL:
+
+	PostgreSQL: rds.force_ssl=1 in RDS aws console (parameter groups)
+	MySQL: Within DB enable it
+
+
+To login to DataBase:
+
+	1. Use Traditional username and password for login to database
+	2. For MySQL and PostgreSQL, we can use IAM based authentication
+
+
+
+Aurora can have max of 15 replicas
+
+Aurora is high availabe by default
+
+
+
+Writer Endpoint pointing to master:
+
+	In Failover scenario, we don't have to change the WriterEndpoint, it will automatically point to right one (Active one)
+
+Reader Endpoint for replicas: (Happens for only aurora)
+
+	Application need not monitor/manage all connections of replicas. Applocation will point to Reader endpoint and endpoint will balance load across all replicas.
+
+
+Aurora supports BackTrack, where we can backup data at any point of time
+
+
+Aurora can be serverless.
+
+Aurora, we can use scaling group for auto scaling the read replicas of Aurora DB.
+
+
+Aurora is Global database
+	
+
+
+

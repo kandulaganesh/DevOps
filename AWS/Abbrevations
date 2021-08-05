@@ -1,0 +1,57 @@
+ASG -> Auto Scaling Groups
+
+ARN -> Amazon Resource Name
+
+SSm -> Systems Manager
+
+STS --> Security Token Service
+
+KMS -> Key management service
+
+RDS --> Relational Database Service
+
+APM -> Application Performance Monitoring
+
+WAF -> Web Application Firewall
+
+CDK -> Cloud Development Kit
+
+EB -> Elastic Beanstack
+
+RDS -> Relational Database Service
+
+IAM -> Identity and Access Management (IAM)
+
+	AWS Identity and Access Management (IAM) is a web service that helps you securely control access to AWS resources. You use IAM to control who is authenticated (signed in) and authorized (has permissions) to use resources.
+
+ALB -> Application Load Balancer
+
+NACL -> Network access control List
+
+IGW -> Internet Gateway
+
+
+ECR -> Elastic Container Registry
+
+AZ -> Availability Zone
+
+
+SNS -> Simple notifcation service
+
+SQS -> Simple queue service
+
+SAM -> Serverless Application model
+
+
+AMI -> Amazon Machine Image
+
+ENI -> Elastic Network Interface.
+
+ACM -> Amazon Certificate Manager
+
+ELB -> Elastic Load Balancer
+
+ECS -> Elastic Container Service
+
+
+EIP -> Elastic Ip address

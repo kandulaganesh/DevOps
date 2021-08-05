@@ -1,0 +1,288 @@
+Amazon Elastic Compute Cloud (Amazon EC2) provides scalable computing capacity in the Amazon Web Services (AWS) Cloud. Using Amazon EC2 eliminates your need to invest in hardware up front, so you can develop and deploy applications faster. You can use Amazon EC2 to launch as many or as few virtual servers as you need, 
+
+
+
+It is just a VM in cloud
+
+
+When we stop and start (not reboot) , the instance may get moved to another host.
+
+
+Only one role can be assigned to EC2 instance.
+
+No ARN for Ec2 Instance
+
+It is a IAAS
+
+
+We goto SecurityGroups to add a new port.
+
+metaData of Instance:
+	https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/instancedata-data-retrieval.html
+
+	to retrive the metaInfo of instance, follow this request http://169.254.169.254/latest/meta-data/
+
+	The IP address 169.254.169.254 is a link-local address and is valid only from the instance.
+
+
+
+EC2 is a resizable compute capacity.
+
+
+Anything and everything on AWS uses EC2 instances.
+
+EC2 is highly configurable i.e 
+
+1. AMI
+2. Instance Type (memory and vcpu)
+3. Storage Type (EBS, EFS) (SSd, HDD, Virtual Magnetic Type, Multiple Volumes)
+4. Instance config .. like Security Groups, Key Pairs, UserData, IAM roles, Placement Groups
+
+
+EC2 Storage:
+
+	1. EBS, EFS (NAS)
+	2. EC2 Instance Store (Harddisk)
+
+
+
+We can directly attach the AMI roles to Instances.
+
+We can attach the IAM Profile to instances VIA Instance-Profile
+
+
+Placement Groups:
+
+	Placement groups lets you to chosse the logical placement of your instances to optimize for communication, performance, durability.
+
+	Placement groups are Free 
+
+	1. Cluster
+		Same Rack and same AZ
+	2. Partition
+		We can create max of 7 Groups (7 Partitions in AZ)
+		Each Group will have racks
+		Can Have 100's of Instances
+		One Partition rack do not share with other partition
+	3. Spread
+		Each instance will be on different rack
+		Spread can be multi-AZ
+		Can spread max of 7 Instances per AZ per Placement Group
+
+
+Ec2 instances Status:
+
+1. Stop
+	This will stop billing
+	This will change the public ip address
+2. Reboot
+3. Terminate
+
+
+Every EC2 Instance will have public and private ip address. Virtual Interface's are associated to private ipaddress. Public ip address's are NAT to private address.. i.e we don't find interfaces for public ipaddress.
+
+Public ip address ---NAT--> Private Ip address (Interface on EC2 Instance)
+
+When we assign a elastic-ip address, it will override the public ip address i.e it will remove the public ip address and assign elastic ip address.
+
+If you associate an Elastic IP address with your instance, your current public IP address is released.
+
+Public and Elastic ip address's are associated to the private ip address.
+
+We can associate multiple ip address to a single interface.
+
+UserData:
+	Any script that we write inside this will get automatically ran when we launch an instance.
+
+i.e userData will be executed whenever we create an instance.
+
+EC2 UserData runs with root user.
+
+
+EC2 instances launch Types:
+
+1. Spot
+	a. These can be reclaimed at anytime.. by AWS
+2. On Demand
+	a. The one we are using.. we come and deploy an instance as long as we want
+	b. Pay per second
+	c. No long-term commitments.
+3. Reserved
+	a. mentioning that we need for 1year
+		1. Reserved Instances
+		2. Scheduled Instances
+		3. Convertable Reserved Instances (flexible instances)
+4. Dedicated instances
+	a. Placed on our own H/W's (No control on instance placement)
+5. Dedicated hosts (Control instance placement)
+	a. Reserving whole H/W.
+	License related stuff
+	compliance needs
+
+
+Dedicated instances, placement is not in the hands of customer, aws will decide the placement of instance.
+
+Dedicated hosts, customer can chose to place instances.
+
+Dedicated Hosts give you additional visibility and control over how instances are placed on a physical server.
+
+Dedicated Instances are Amazon EC2 instances that run in a VPC on hardware that's dedicated to a single customer. Your Dedicated instances are physically isolated at the host hardware level from instances that belong to other AWS accounts. Dedicated instances may share hardware with other instances from the same AWS account that are not Dedicated instances.
+
+
+Stopping the EC2 instance will change the public IP address.
+
+UserData runs as root user.
+
+Dedicated hosts, have complete control over the placement of instances.
+
+
+
+
+EC2, we can attach ASG, this helps in scaling the resources based on policies.
+
+
+EC2 instances, we have to manage them.
+
+
+T2/T3 are burstable instance types
+
+
+The supported purchasing options are: On-Demand Instances, Reserved Instances, Dedicated Instances, and Spot Instances. These instances are not supported on a Dedicated Host. For more information, see Instance purchasing options.
+
+Dedicated Host: 
+
+
+
+On-Demand Instance limits are managed in terms of the number of virtual central processing units (vCPUs) that your running On-Demand Instances are using, regardless of the instance type.
+
+
+
+Dedicated Instances are Amazon EC2 instances that run in a virtual private cloud (VPC) on hardware that's dedicated to a single customer. Dedicated Instances that belong to different AWS accounts are physically isolated at a hardware level, even if those accounts are linked to a single payer account. However, Dedicated Instances may share hardware with other instances from the same AWS account that are not Dedicated Instances.
+
+
+A Dedicated Host is also a physical server that's dedicated for your use. With a Dedicated Host, you have visibility and control over how instances are placed on the server. For more information
+
+
+
+An important difference between a Dedicated Host and a Dedicated Instance is that a Dedicated Host gives you additional visibility and control over how instances are placed on a physical server, and you can consistently deploy your instances to the same physical server over time.
+
+
+Simply put, there are no apparent technical differences between Dedicated Instances and Dedicated Hosts from the physical host level. Both services give the option to launch instances to your own Dedicated Hosts with resources that will not be consumed by other customers.
+
+
+
+you can retrieve the role name attached to your EC2 instance using the metadata service but not the policy itself
+
+
+
+URL: https://169.254.169.254/latest/meta-data
+
+
+	Above helps in getting meta data of EC2 Instances...
+	We can retrive IAM Role name form the MetaData, not the policy.
+	Everything about EC2 can be get
+	Even applications while communicating with AWS resources, they invoke this for getting Role Creds
+
+
+IAM User/Creds are Personal, Don't share to anyone.
+
+If you want to give access, use STS.
+
+
+EC2 launch types:
+
+	1. Spot
+	2. Dedicated host
+	3. Dedicated instance
+	4. On demand
+	5. Reserved
+
+Instance Types: (Same as T2, T3, ...)
+
+	General Purpose (T,M,A family)
+		like web servers
+	Compute Optimized (C Family , C -> compute)
+		Good for compute-intensive applications
+	Memory Optimized (R series, R -> RAM)
+		That needs memory-intensive applications
+	Accelerated Computing: 
+		Include additional hardware (GPUs, FPGAs) to provide massive amounts of parallel processing for tasks such as graphics processing.
+	Storage Optimized:
+		Ideal for tasks that require huge amounts of storage, specifically with sequential read-writes, such as log processing.
+
+
+Instance types/Instance Families:
+
+	1. T1, T2, T3, ...
+
+	Amazon EC2 provides a wide selection of instance types optimized to fit different use cases. Instances are virtual servers that can run applications. They have varying combinations of CPU, memory, storage, and networking capacity, and give you the flexibility to choose the appropriate mix of resources for your applications. Learn more about instance types and how they can meet your computing needs.
+
+	Instance Type means t2.micro, t2.medium
+
+	Instance Family is t2, t3, ...
+
+Vertical Scaling is common for Database.
+
+On restarting the EC2 instances i.e stopping and starting, Instances will loose public ip address.
+
+On stopping EC2 instances, there will no costing, while running only AWS will price the EC2
+
+IAM Roles attached to ASG will get assigned to EC2.
+
+
+EC2 never knows the public ip, they know only private Ip
+
+
+Dedicated Instances:
+
+	Dedicated Instances are Amazon EC2 instances that run in a VPC on hardware that's dedicated to a single customer. Your Dedicated instances are physically isolated at the host hardware level from instances that belong to other AWS accounts. Dedicated instances may share hardware with other instances from the same AWS account that are not Dedicated instances. Pay for Dedicated Instances On-Demand, save up to 70% by purchasing Reserved Instances, or save up to 90% by purchasing Spot Instances.
+
+	If we stop and start the dedicated instances, The instaces may move to another rack server (it is possible)
+
+	We pay for instances.
+
+Dedicated Hosts:	
+
+	You can also use Dedicated Hosts to launch Amazon EC2 instances on physical servers that are dedicated for your use. Dedicated Hosts give you additional visibility and control over how instances are placed on a physical server, and you can reliably use the same physical server over time. As a result, Dedicated Hosts enable you to use your existing server-bound software licenses like Windows Server and address corporate compliance and regulatory requirements. Visit this page to compare Dedicated Instances and Dedicated Hosts.
+
+	We pay for H/W.
+
+	If we enable auto-placement while creating Dedicated hosts, then all the "dedicated hosts- launch instance on dedicated host" will be launched on Dedicated hosts whose auto-placement is enabled
+
+	If auto-placement is disabled while creating "dedicated hosts - launch instance on dedicated host", then we have to specify the host-id where the instance will be launched on specific H/W
+
+
+Auto-placement is configured at the host level. It allows you to manage whether instances that you launch are launched onto a specific host, or onto any available host that has matching configurations.
+
+
+Tenancy:
+
+	Tenancy defines how EC2 instances are distributed across physical hardware and affects pricing. There are three tenancy options available:
+
+	Shared (default) — Multiple AWS accounts may share the same physical hardware.
+
+	Dedicated Instance (dedicated) — Your instance runs on single-tenant hardware.
+
+	Dedicated Host (host) — Your instance runs on a physical server with EC2 instance capacity fully dedicated to your use, an isolated server with configurations that you can control.
+
+
+keypair pem file we give 400 permissions
+
+References:
+
+	https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-spot-instances.html
+
+
+LAMP Stack:
+
+	L -> Linux OS
+	A -> Apache web server
+	M -> MySQL
+	P -> PHP Application Logic
+
+	
+
+
+EBS can be mounted to one instance at a time.
+
+But a EC2 can have more than one EBS

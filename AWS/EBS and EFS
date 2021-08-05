@@ -1,0 +1,106 @@
+Amazon EBS is a block-level storage volume that persists independently from the lifetime of an EC2 instance, so you can stop and restart your instance at a later time. Ephemeral instance store volumes are physically attached to the host computer. The data on an instance store persists only during the lifetime of the instance.
+
+
+When you launch an instance, the root device volume contains the image used to boot the instance. When we introduced Amazon EC2, all AMIs were backed by Amazon EC2 instance store, which means the root device for an instance launched from the AMI is an instance store volume created from a template stored in Amazon S3. After we introduced Amazon EBS, we introduced AMIs that are backed by Amazon EBS. This means that the root device for an instance launched from the AMI is an Amazon EBS volume created from an Amazon EBS snapshot.
+
+You can choose between AMIs backed by Amazon EC2 instance store and AMIs backed by Amazon EBS. We recommend that you use AMIs backed by Amazon EBS, because they launch faster and use persistent storage.
+
+Only the following instance types support an instance store volume as the root device: C3, D2, G2, I2, M3, and R3.
+
+
+block level storage 2 types:
+ 
+	1. Ephemeral instance store volumes (Limited to AZ's)
+
+		a. Instance store instance store provides temporary block-level storage for your instance. This storage is located on disks that are physically attached to the host computer.
+
+		b. Data on an instance store volume persists only during the life of the associated instance; if an instance is stopped or terminated,any data on instance store volumes is lost.
+
+		c. Instance store backed Instances cannot be stopped, as when stopped and started AWS does not guarantee the instance would be launched in the same host and hence the data is lost
+
+		d. Data on Instance store volume is LOST in following scenarios :
+			1. Underlying disk drive fails
+			2. Instance stops
+			3. Instance terminates
+			Therefore, do not rely on instance store for valuable, long-term data.
+
+			
+	2. EBS (Elastic Block Store) (Limited to AZ's)
+	
+		a. An EBS volume behaves like a raw, unformatted, external block device that can be attached to a single instance and are not physically 
+		attached to the Instance host computer (more like a network attached storage).
+
+		b. EBS volume can be detached from one instance and attached to another instance.
+
+		c. EBS volume is network attached drive which results in slow performance but data is persistent meaning even if you reboot the instance data 	 will be there.
+
+
+
+EBS Volume Types:
+
+	1. GP2
+		a. Used for boot volumes
+		b. Low latency interactive apps
+		c. Size: 1GB-16TiB
+		d. IOPS: 3000 to 16000 (we get 3IOPS per 1GB) (minimum of 100IOPS) (Burst Upto 3000IOPS )
+		e. In This based on Size.. we choose IOPS will be chosen automatically....
+		f. IOPS can be increased by increasing Size
+
+	2. IOPS
+		a. Critical Business applications that require sustainer IOPS performance
+		b. Large DataBase workloads 
+		c. Size: 4GiB to 16TiB
+		d. Provisioned IOPS (PIOPS) , 100 to 64,000 (we get 50IOPS per 1GB)
+		e. Here, we have to choose number of IOPS... but there will be upper limit (50 * no of GB's)
+		f. Can increase IO Independently
+
+	3. STI
+		a. Streaming workloads requite consistent and throughput at a low price
+			like BigData, log processing...
+			Cannot be boot volume
+		b. 500GB to 16TB
+		c. MAX IOPS of 500
+	4. SCI
+		a. For infrequently accessed data
+		b. Low storage Cost
+		c. Cannot be used for boot volume
+		d. 500GiB - 16TiB
+		e. Max IOPS - 250
+
+
+
+EC2 instances support two types for block level storage: EC2 Instances can be launched using either Elastic Block Store (EBS) or Instance Store volume as root volumes and additional volumes.
+
+
+EBS volumes are created in a specific Availability Zone, and can then be attached to any instances in that same Availability Zone. To make a volume available outside of the Availability Zone, you can create a snapshot and restore that snapshot to a new volume anywhere in that Region. You can copy snapshots to other Regions and then restore them to new volumes there, making it easier to leverage multiple AWS Regions for geographical expansion, data center migration, and disaster recovery.
+
+EC2 Instances, we can mount EFS as well..
+
+	1. With EFS.. we can mount volume of another AZ's volume as well
+	2. Amazon Elastic File System (Amazon EFS) provides a simple, scalable, fully managed elastic NFS file system for use with AWS Cloud services and on-premises resources. 
+	3. Uses Security Group to access the file system.
+	4. EFS is compatibale with Linux machines.. not Windows
+	5. File system scales automatically... pay-per-use, no capacity planning.
+	6. Can be mounted by multiple Instances at a time.
+
+	Storage Tiers:
+	1. Standard: For frequent Access files
+	2. InFrequent Access(EFS-IA): cost to retrieve files, low price to store
+
+	EFS support after N number of days.. files will move to automatically to another tier..
+
+
+EBS volumes can be mounted only one instance at a time and locked into specific AZ's, unlike EFS
+For EBS we have to provision and pay for the provision capacity, not the actual usage capacity, But in EFS it is pay per use
+
+Instance Store have max IOPS
+
+It is possible to not to loose EBS volume after termination as well..
+
+Amazon EBS Multi-Attach enables you to attach a single Provisioned IOPS SSD (io1 or io2) volume to multiple instances that are in the same Availability Zone. You can attach multiple Multi-Attach enabled volumes to an instance or set of instances. Each instance to which the volume is attached has full read and write permission to the shared volume. Multi-Attach makes it easier for you to achieve higher application availability in clustered Linux applications that manage concurrent write operations.
+
+
+
+References:
+1. https://medium.com/awesome-cloud/aws-difference-between-ebs-and-instance-store-f030c4407387
+2. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEBS.html

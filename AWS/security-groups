@@ -1,0 +1,127 @@
+https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-security-groups.html
+
+A security group acts as a virtual firewall for your EC2 instances to control incoming and outgoing traffic. Inbound rules control the incoming traffic to your instance, and outbound rules control the outgoing traffic from your instance. When you launch an instance, you can specify one or more security groups. If you don't specify a security group, Amazon EC2 uses the default security group. You can add rules to each security group that allow traffic to or from its associated instances. You can modify the rules for a security group at any time. New and modified rules are automatically applied to all instances that are associated with the security group. When Amazon EC2 decides whether to allow traffic to reach an instance, it evaluates all of the rules from all of the security groups that are associated with the instance.
+
+
+SG is a functionality... so if u want to include this in any service.. goto that service and add or remove the SG.
+
+
+authorize-security-group-ingress:
+
+Adds the specified ingress rules to a security group.
+
+An inbound rule permits instances to receive traffic from the specified IPv4 or IPv6 CIDR address ranges, or from the instances associated with the specified destination security groups.
+
+You specify a protocol for each rule (for example, TCP). For TCP and UDP, you must also specify the destination port or port range. For ICMP/ICMPv6, you must also specify the ICMP/ICMPv6 type and code. You can use -1 to mean all types or all codes.
+
+Rule changes are propagated to instances within the security group as quickly as possible. However, a small delay might occur.
+
+In Security Group we can give both specific ip-address or a range of ip-address, but in NACL's we have to give specific ip-address
+
+
+http://169.254.169.254/latest/meta-data/mac/ => Will display the mac address.
+
+
+
+For every EC2 Instance will have security group.
+
+
+It is a Virtual Firewall, that controls the traffic to and from the EC2 Instances.
+
+There are no Deny rules, By default SG Blocks all traffic.
+
+Security Group doesnot depend on subnet's i.e we can attach multiple instances of different subnets to SG.
+
+InBound Rules:
+
+1. You can specify the source to be a ip address range or specific ip address
+2. We can specify the source to be another SecurityGroup.
+3. We can nested multiple SG to an instance.
+	Rules are permissive(Instead of restrictive) i.e if any SG allows then it will be considered, althrough remaining SG's blocks.
+
+It acts at a Instance Level.
+
+Security groups are stateful — if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules. Responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules.
+
+We can't block a particulat ip address i.e suppose we allowed a subnet for traffic, but want to block a particular ip address.. which is not possible with Surity Groups. But we. can do with Network Access Control List (NACL).
+
+NACL is state-less.
+
+
+Limits:
+
+	1. Upto 10,000 SG's in a region.
+	2. You can have 60 inbound and 60 outbound rules per security group.
+	3. 16 SG's for the Elastic Network interface(default 5)
+
+
+State: Stateful or Stateless
+	Security groups are stateful: This means any changes applied to an incoming rule will be automatically applied to the outgoing rule. e.g. If you allow an incoming port 80, the outgoing port 80 will be automatically opened.
+	Network ACLs are stateless: This means any changes applied to an incoming rule will not be applied to the outgoing rule. e.g. If you allow an incoming port 80, you would also need to apply the rule for outgoing traffic.
+
+
+We can Use single Security Groups to many EC2 Instances... and also we can apply multiple Security Groups to a single EC2 instance.
+
+We can keep another security group Id as the source address while adding rules. This helps when we scale instances, we don't have to explicitly mention the ip address in Security Group.
+
+
+Security Group is a firewall for Instances, which is outside the Instances.
+
+So traffic flow will be in following way:
+
+	Traffic -> Security group -> EC2 Instances
+
+	If firewall rules (SecurityGroup) block any request, that request will not even touch the Instances.
+
+	Ec2 instance will never the request, if it is blocked by SG.
+
+
+An instance can have multiple SG's and a SG can have multiple Instances.
+
+
+SG's are limited to region or VPC.. i.e if we create an instance in another region or VPC.. then we have to create another SG.
+
+We can add SecurityGroup to any service that accepts requests like
+	1. database's
+	2. Instances
+	3. LoadBalancer
+	4. InternetGateway
+
+
+Security group rules enable you to filter traffic based on protocols and port numbers.
+
+
+
+Security groups are stateful — if you send a request from your instance, the response traffic for that request is allowed to flow in regardless of inbound security group rules. Responses to allowed inbound traffic are allowed to flow out, regardless of outbound rules.
+
+When you create a new security group, it has no inbound rules. Therefore, no inbound traffic originating from another host to your instance is allowed until you add inbound rules to the security group.
+
+Security Group:
+
+	1. It supports only allow rules, and by default, all the rules are denied. You cannot deny the rule for establishing a connection.	
+	2. It is a stateful means that any changes made in the inbound rule will be automatically reflected in the outbound rule. For example, If you are allowing an incoming port 80, then you also have to add the outbound rule explicitly.	
+	3. It is associated with an EC2 instance.	
+	4. All the rules are evaluated before deciding whether to allow the traffic.	
+	5. Security Group is applied to an instance only when you specify a security group while launching an instance.
+
+By Default inbount traffic is disabled, outbound traffic is enabled
+
+
+Security Groups will analyze all the rules, i.e if any rule is ALLOW, the traffic will be directed.
+
+NACL's will have priiorities to the rules(Less number will have high priority), Rule with high priority takes over the low priority.
+
+security groups are stateful and if traffic can go out, then it can go back in
+
+
+
+Errors:
+
+	1. Connection Refused, then it is a application error. (not an security group issue)
+	2. If request hangs for so long, then it's security group
+	
+Every traffic/request that comes or goes out of EC2 instance must pass through SecurityGroups
+
+References:
+
+	https://docs.aws.amazon.com/cli/latest/reference/ec2/authorize-security-group-ingress.html

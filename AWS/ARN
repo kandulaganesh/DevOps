@@ -1,0 +1,8 @@
+Amazon Resource Names (ARNs) uniquely identify AWS resources. We require an ARN when you need to specify a resource unambiguously across all of AWS, such as in IAM policies, Amazon Relational Database Service (Amazon RDS) tags, and API calls.
+
+Suppose we want to give permissions to a Bucket in S3, not a whole S3, to achieve this, we get the ARN of the bucket and use this ARN in resiurce section of IAM Policy.
+
+Reference:
+
+	1. https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+

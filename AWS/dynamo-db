@@ -1,0 +1,222 @@
+Dynamo-DB:
+
+	It is a schema less DB
+
+	It is a key-value and document NoSQL database which can guarantee consistent read and writes at any scale
+
+	key-value database means key and an associated value, nothing more.
+
+	Document database means key-value database , but value is nested Data.
+
+	1. Use SSD (Solid-state drive), it is a integrated circuit assemblies to store data persistently, typically using flash memory, and functioning as secondary storage in the hierarchy of computer storage.
+
+	2. All data is stored in SSD and spread across atleast three AZ's (Availability zone)
+
+	It Provides two types of DB (Based on consistency)
+
+		1. Eventual Consistent Reads (Default)
+			How this works is, when a read operation happens, it will just return the value, it doesn't care whether the value is uptodate or not.
+			There will be some delay in reading the value
+			Reads are fast
+
+		2. Strongly Consistent Reads
+			Here, it will return value once all the database are updated with new value, So there will be some delay or latency in getting the value.
+			Reads are slow
+
+
+	While provisioning for the resources, it will ask for rate of read/write operations per second.
+
+
+	Dynamo DB is used for internet-scale applications.
+
+	Features:
+
+		1. Fully managed
+		2. Multi-region
+		3. Multi master
+		4. Durable database
+		5. Built-in security
+		6. Backup and restore
+		7. Inmemory cache
+
+
+
+Provisioning means Allocating Resources
+
+
+naming..
+
+	1. Table
+	2. Items (Both keys and attributes)
+	3. Attributes (Columns)
+	4. keys (Identify the data)
+
+
+
+Reads are Fast in eventual consistency
+
+
+
+Partition:
+
+A partition is when u slice your table upto small chunks of data (a partition).
+
+Purpose:
+	It speeds up reads for very large tables by logically grouping similar data together.
+
+
+Dynamo DB will automatically create partitions for you as data goes.
+
+DynamoDB starts off with a single partition.
+
+There are two cases where DynamoDB creates partitions:
+	1. For every 10GB of data
+	2. When you exceed the RCU's or WCU's for single partition.
+
+Each partition has maximum of 3000 RCU's and 1000 WCU's
+
+
+Primary key cannot be changed later.
+
+We can sort the data in table using sort-key.
+
+Two types of primary keys:
+
+1. Using only a partition key is called a Simple Primary Key (Hash)
+2. Using both a partition and sort key is called Composite Key (Range)
+	Combination of partition and sort key should be unique.
+
+
+In Simple Primary Key.. only primary key should be unique.
+
+In Composite Key.. together partititon key and sort key should be unique.
+
+
+Scan operation is slower than query
+Scan operation is expensive.
+
+By default queries are eventually consistent.
+
+
+DynamoDB have a hash function (Alogorithm), this will decide to which partition new entries should go.
+
+	This hash function takes primary-key and data to determine the partition to which data need to be populated.
+
+
+
+
+RCU's and WCU's Capacity Mode:
+
+1. Provisioned
+2. On-Demand
+
+
+
+RCU:
+
+	One strong consistent read per second
+	or two eventually consistent per second
+	for an item upto 4KB in size.
+
+
+
+Upper limit of a table is:
+
+	40,000 RCUs
+	40,000 WCUs
+
+
+
+There will be calculations on RCU and WCU
+
+
+Global Tables:
+
+Amazon Global table provides fully managed solution for deploying a multi-region, multi-master database, without having to build own replication solution.
+
+To Create Global Tables, must have:
+
+	1. Use KMS CMK
+	2. Enable Streams
+	3. Stream type of Old or new image
+
+
+
+
+Transactions:
+	represents a change that will occur to the database. If any dependent condition fails then a transaction will rollback as if the databse changes never occured.
+
+
+
+TTL (Time to Live):
+
+Let's u to delete the items automatically.
+
+
+
+
+
+Streams:
+
+We can enable the streams, which will capture every modification to the table, so that we can react to the changes.
+
+When we insert, update, delete occurs, The change will be captured and sent to the lambda function.
+
+
+
+Indexes:
+
+	DynamDb support indexes.
+
+	It has two types of indexes:
+		1. Local Secondary Indexes
+		2. Global Secondary Indexes
+
+	We generally use global over the local.
+
+	Local Secondary indexes provide more Consistency.
+	Global Secondary Indexes provide less Consistency.
+
+
+	Local Secondary Index:
+
+		It's local to the partition
+		It needs both partition key and sort key.
+		Partition key must be same as the Base table, but sort key must be different.
+		Size limits are same as partition table size limits i.e 10GB size.
+		Once it is created, modification is not possible
+		Have both strongly and eventual consistency.
+		These cannot be modified or deleted unless the table is deleted.
+		use only composite keys.
+		Use basetable capacity settings.
+
+
+	Global Secondary Index:
+		It is considered as global, because queries on the index can span all of the data in the base table, across all partitions.
+		It can be modified at any time.
+		Partition key can be anything.
+		Sort key is optional.
+		Have only eventual consistency.
+		Has it's own capacity settings.
+
+
+
+DAX (DynamoDB Accelerator):
+
+	DAX is fully managed in-memory cache for DynamoDB that runs in a cluster.
+
+If we don't need DAX.. we can consider using ElasticCache
+
+Transactions let you to query multiple tables at once and is an all-or-nothing approach (All RestApi must succed)
+
+DynamoDB supports transactions via the TransactWriteItems and TransactGetItems API Calls
+
+DynamoDB Streams allows to setup a lambda function trigerred everytime data is modified in a table to react to the changes
+
+	Streams do not consume RCU's
+
+
+It supports Binary.. number and string
+
+
+

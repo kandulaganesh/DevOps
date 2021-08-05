@@ -1,0 +1,446 @@
+Amazon Simple Storage Service (Amazon S3) is an object storage service that offers industry-leading scalability, data availability, security, and performance. This means customers of all sizes and industries can use it to store and protect any amount of data for a range of use cases, such as data lakes, websites, mobile applications, backup and restore, archive, enterprise applications, IoT devices, and big data analytics. Amazon S3 provides easy-to-use management features so you can organize your data and configure finely-tuned access controls to meet your specific business, organizational, and compliance requirements.
+
+
+S3 is a object storage.. , here object is a file
+
+
+it is a server less storage in cloud. no worry abt file system and DiskSystem.
+
+Version the data.
+
+Storage from 0Bytes to 5TB.
+
+DataConsistency:
+
+1. When we create a new objects... Policy is Read After Write Consistency.. , when u upload new object you are able to read immediately after writing.
+
+and For PUTS and DELETE, it is eventual consistency.
+
+We can accelerate the transfer of data to S3 Bucket by uploading objects to EfdgeLocations..
+
+Presigned URL's:
+
+	1. Urls that refer to the S3 Objects, which gives temporary access to either download or upload.
+
+	Usually used to give access to private objects.
+
+
+	aws s3 presign s3://mybucket/object --expires-in 300
+
+
+By Default all buckets are private.. can't be accessed from public.
+
+
+Child files will not inherit the properties of parent files.. like suppose if parent files are public, but child files will not be.
+
+	Parent files means first time uploaded files, child means recently uploaded files.
+
+
+S3 replicates data atleast 3AZ's
+
+We don't have to provision before and it can scale upto infinity....
+
+
+S3 is a Global Service.. but buckets are regional service...
+
+
+Every Object has a key and the key is the path... (Relative path is the key of object)
+
+	like a object s3://my-bucket/my-folder/my-file.txt
+
+		So Above... key is my-folder/my-file.txt
+
+Maximum size of Object is 5TB
+
+We can upload max of 5GB At a time.. 
+
+
+If want to upload more than 5GB size of Object... then we have to break the object to small parts(Each part size should be less than 5GB)
+AWS Provides a concept "multi-part upload" which will take care of breaking the object, uploading and assembling the object.
+
+S3 Versioning enables at Bucket Level.
+
+Versioning helps in easy rollback... by unintentional delete.
+
+Any files which is uploaded before enabling versioning, it will have versionNumber as null.
+
+Suspending the versiong will not let delete the of exisiting versioning, but it will suspend the versioning of future upload files.
+
+
+Once Versioning is enabled... we can't disable the versiong but we can suspend the versioning...
+
+We can delete the objects in S3 pernmently as well...
+
+When we delete the file... it will just mark it as "Deleted"
+
+But if we again delete the "Deleted" marked file, the below version filw will be displayed
+
+Versioning example:
+
+	1. Consider we uploaded a file... (test.txt) ---> Let's call this version as V1
+	2. When we do "ls", this will list the above file (It will list V1 version file)
+	3. Now we uploaded a newer version (test.txt) ---> Let's call this version as V2
+	4. When we do "ls", this will list the above file (This will list V2 version file)
+	5. Now if we delete the test.txt file (here actually we are not deleting the file, but we are marking this file as "Deleted")
+	6. Now again run "ls" command, this will not list the test.txt file as we deleted it (More presice.. we marked as "Deleted").
+	7. If we delete the marked file (Here we are deleting the mark that file is having), we can see the files when we run "ls" command
+
+
+
+
+Encryption:
+
+We can encrypt in 4 methods:
+
+	1. SSE-S3 Encryption:
+		a. Encrypts using keys handled and managed by Amazon S3
+		b. Object is encrypted at server side.
+		c. Type of encryption is AES-256
+		d. We can encrypt the objects by using this type of encryption by adding following to header
+				Must set header => "x-amz-server-side-encryption":"AES256"
+		e. Transmission can be HTTP/HTTPS
+
+	2. SSE-KMS
+		a. Keys are managed by KMS
+		b. Why we use this over SSE-S3 is because, it provides, user control (Who has access to what keys) + audit trail
+		c. For this to encrypt using this method, we must set header => "x-amz-server-side-encryption":"aws:kms"
+		d. Transmission can be HTTP/HTTPS
+
+	3. SSE-C
+		a. Managing our own encryption keys
+		b. Encryption keys must be provided in the header for every request we make
+		c. Transmission must be HTTPS
+		d. While retrieving the data also we have to pass the keys.
+
+		Only via CLI , not web console
+
+	Above three methods... we send the Data and at the server side data will be encrypted... (Goal is to store encrypted data, but in transit.. data will be in unencrypted)
+
+	4. Client Side Encryption
+		a. In this method... the data we send itself is in encrypted, i.e befpre uploading the data, we encrypt and send it to S3
+		b. AWS Provides libraries like Amazon S3 Encryption Client, helps in encrypting the objects at client side.
+		c. Can be HTTP/HTTPS
+
+
+	When to choose SSE-KMS over the SSE-S3, when we we want to have some control over encryption i.e KMS allows us to rotate keys, But SSE-S3 doesn't provide customization for customer, everything it only takes care.
+
+
+We can access the S3 resources using following ways:
+
+	1. The User IAM permissions allow it
+	2. The Resource policy allows it(Bucket Policy, Object Access Control List, Bucket Access Control List)
+
+
+Amazon exposes:
+
+	1. HTTP Endpoint: not encrypted
+	2. HTTPS Endpoint: encrypted inflight
+
+	We can use any endpoint for commiting the data in S3, for in-flight encryption, we can use HTTPS end point
+
+
+For temporary access to files in S3, use Pre-signed URL's
+
+
+While uploading the objects we can have following security stuff:
+
+	1. Restricting the Access...
+	2. By keeping Conditions... like Add new Objects only if ServerSideEncryption SSE-S3 is enabled by verfying the header...
+
+
+
+S3 Buckets supports Static Websites...
+
+
+CORS:
+
+	Cross Origin Resource Sharing
+
+
+	By default Cross Origin is not allowed
+
+
+MFA Delete:
+
+	To Use MFA-Delete, we must enable the Versioning.
+
+	MFA Delete can be enabled/disabled by only Root User.
+
+Amazon S3 uses eventual Consistency... no way to have Strong Consistency...
+
+
+S3 Access Logs:
+
+	For Audit Purpose, we can log all access to S3 buckets. Any request made to S3 bucket from any account, authorized or unauthorized, denied, will be logged into another S3 Bucket.
+
+	We can use this data for analysis.
+
+	User <--> S3 Bucket --> S3 Logging Bucket
+
+
+S3 Replication:
+	Enabling version is mandatory
+	CRR (Cross Region Replication)
+	SRR (Same region replication)
+	But Copying will be Async...
+	After activating, only new objects will be replicated.
+	This will be read only
+
+
+We can do Select Operation on S3... i.e like sql query.. we can also do query on S3 files.
+
+	i.e retrieve less data by filtering at the server side.
+
+	Object filtering also possible i.e (*.jpg) , send me all jpg files.
+
+For better read performance:
+
+	Select particular fields
+
+	Use Edge location (Near by Datacenter)
+
+
+For write, use multi-part for quick PUT Operations.
+
+
+Presigned URL's:
+
+	We can use these for both upload and dowload.
+
+	For download, we can generate the presigned url's using CLI or SDK.
+
+	For Upload we must use SDK to generate presigned URL's.
+
+	Default expiration of Prsigned URL's are 3600seconds.
+
+	Presigned URL's get permissions of the user who generated the URL.
+
+	Command to generate the presigned URL:
+
+		aws s3 presign <object> <options>
+
+		example:
+			aws s3 presign s3://my-bucket/beach.png --expires-in 300 --region us-east-1
+
+
+S3 LifeCycle:
+
+	We can move data to another stage of S3.. for staged/Not frequently used data.
+
+	Transition actions:
+		Move Objects from one class to another after certain days.
+
+	Expiration Actions:
+		Delete the Objects After certain number of days
+	
+
+Storage Classes:
+
+	Amazon S3 Standard - General Purpose (What we use by default)
+	Amazon S3 Standard - Infrequent Access
+	Amazon S3 One Zone Infrequent Access
+	Amazon S3 Intelligent Tiering
+		This class will move data from one storage class to another class, intelligently
+	Amazon S3 Glacier
+	Amazon S3 Glacier Deep Archive
+
+	Amazon S3 Reduced Redundancy Storage (deplicated)
+
+
+	General Purpose Storage:
+
+		High Durability across multiple AZ's
+		High Availability
+
+
+	Infrequent Access:
+
+		Suitable for less frequent access objects, but required rapid access when access needed.
+		High Durability and Availablity
+		Low Cost Compared to General Purpose
+		Data is stored in multiple AZ's
+
+	One Zone Infrequent Access:
+
+		Same as IA, but Data is stored in single AZ
+		Durability is high, but less availability
+		But Data is lost once AZ get destrioyed.
+
+	S3 Intelligent Tiering
+
+		Automatically move objects between two access tiers based on changing access patterns
+		Rest all same abt Availability, Durability...
+
+	Glacier:
+		Objects are called as Archives
+		Buckets are called as Vaults
+		Meant for archiving/backup
+		Big alternative to magnetic-tape storage
+
+		Retrive Options:
+			1. Expedited ( 1 to 5min)
+			2. Standard (3 to 5hrs)
+			3. Bulk (5 to 12hrs)
+			4. Minumum Storage Duration 90Days
+
+	Glacier Deep Archive
+		Retrival Options:
+			1. Standard (12hrs)
+			2. Bulk (48hrs)
+			3. Minimum Storage duration of 180Days
+
+
+
+Event Notification:
+
+	Object Created, Removed ....
+
+	Targets for SNS Events:
+		1. SQS
+		2. SNS
+		3. Lambda
+
+	To Ensure that the events will get trigerred/reached successfully... enable the versioning
+
+
+S3 object Lock and Glacier Vault Lock
+
+	Using this we can lock an object in S3, by which we can't delete or modify the object.
+
+In S3 we don't provision the resources, It is infinitely scaling resource
+
+Metadata is key value pairs
+
+
+Presigned URL:
+
+	URL contains the credentials
+
+S3 Versioning must be enabled at bucket level.
+
+It will not override the file, but it will create a new version of file when we enable versioning 
+
+
+If we delete a file from S3, after enabling versioning, the file will not be deleted completely, but a delete marker will be added.
+
+
+
+While uploading the files also we can mention the encryption strategy for each file ans also
+
+While creating bucket (At bucket level) as well we can specify the encryption type, so every object commited to the bucket will be encrypted automatically.
+
+
+S3 Security:
+	1. Bucket Policy
+		We use policy generator fo generating the policy, which is at bucket level
+	2. Object ACL
+	3. Bucket ACL
+
+Other Security:
+
+	1. User Based:
+		Which we can control from IAM
+
+
+Logging and Audit:
+
+	1. We can use S3 Access Logs which we can store in another bucket
+	2. Use CloudTrail
+
+Can use MFA
+
+For MFA delete, versioning is mandatory.
+
+and only root account can enable/disable the MFA
+
+and MFA can be enabled only via CLi
+
+IAM Principal means User, role,..
+
+Block all Public access every bucket, or all buckets
+
+
+S3 Access logs:
+
+	For Audit purpose, we can log every request whether it is success/fail, in the another bucket
+
+	user  -> S3 Bucket (Data bucket) -> S3 Bucket (Log bucket)
+
+	Do not set logging bucket to be a monitoring bucket 
+
+For S3 replication, versioning must be enabled on both source and destination
+
+After activating replication, only new objects will be copied, not the old objects
+
+Any delete operation is not replicated (It may be marking or delete permanently)
+
+No chaining repliaction, i.e Bucket-1  <-- repliacte --> Bucket-2 <-- replicate --> Bucket-3
+
+Bucket2 will replicate with Bucket1, and bucket3 will replicate with bucket2, any operations we do in bucket1 will not get copied to bucket3 directly
+
+Replication can be done in cross account as well
+
+
+Default span for pre-signed url is 3600
+
+
+Pre-signed url inherits permissions of user
+
+
+We can't specify the storage class at Bucket level, for every file upload, we specify where and to which storage class this file goes to 
+
+Performance:
+
+	S3 KMS limitations:
+
+		1. While retriving, we send a request to KMS for decrypting and while uploading object it will invoke KMS Api for encrypting, KMS API calls may limit the S3 Performance
+
+	If file size is >100MB, use multi-part file upload 
+
+
+	S3 Transfer Acceleration:
+
+		User(USA) -> CloudFront(USA) -> S3 (Austrilia)
+
+
+	S3 Byte Range Fetches
+
+		We break the file into Bytes and pull each byte paralley
+
+	Get the data by filtering it at server side (BBy using quering at server side)
+
+
+S3 Select and Glacier Select
+
+	Retrieve less data by using SQL by filtering at server side
+
+
+Event Generation:
+
+	Generate events for actions like
+
+		1. Object Created
+		2. Object removed
+		3. Object restore
+		4. Replication
+
+	S3 events can trigger:
+
+		SNS
+		SQS
+		Lambda Functions
+
+If versioning is enabled, S3 will ensure it will generate events for every event
+
+
+S3 object Lock (Versioning must be enabled)
+
+	Adapt WORM (Write Once and Read More)
+	Block the Object deletion for specified period of time
+	
+
+
+
+If we make many changes to an Object at a time, me may miss few events, to have correct number of events, enable the versioning
+
+

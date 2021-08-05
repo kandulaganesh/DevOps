@@ -1,0 +1,57 @@
+It is a fully managed
+
+Buildspec.yml
+
+We can encrypt the artifacts using KMS
+
+
+Code Build can be done from CodePipeline or CodeBuild
+
+CodeBuild runs on docker containers
+
+
+ CodeCommit will automatically trigger the Pipeline through CloudWatch
+
+ buildspec.yml file is consumed by CodeBuild, not any other service like CodePipeline or CodeDeploy
+
+ CodeCommit
+ CodePipeline ()
+ CodeBuild
+ CodeDeploy
+
+
+ Basically pipeline will trigger it, but it will not pass any information to it, Pipeline knows which object to be trigerred, and it will just trigger, Object is already having all info
+
+
+
+In pipeline, we will mention all Build and Deploy
+
+In pipeline we mention how we want to trigger this (By polling or Cloudwatch)
+
+
+Basically,
+
+	Pipeline is a automation server which automates build,test,deploy,....
+
+	So we have components for code,build, deploy... and we use automation server (pipelines) for automating these by triggering then when we commit
+
+	How ?
+
+	We configure in Pipelines, when we commit, Cloudwatch will trigger the Pipelines.
+
+	All the stages in the Pipeline (build, deploy) will be automatically trigerred
+
+	Build we have codeBuild, we give code commit repo, branch and code will have buildspec.yml, using this yml codeBuild will build the code
+
+	Deploy will be trigerred by pipeline, in deploy we mention where we want to deploy (Platform) 
+
+	CodeBuild resources will scale automatically... no provisioning
+
+CodeBuild in VPC:
+
+	By default CodeBuild containers are launched outside of VPC, so It cannot access the VPC Resources
+
+	But if needed we can mention the VPC details like id, security groups, Subnet ID's ..., so the CodeBuild will get deployed in VPC and it can access the VPC Resources.
+
+
+

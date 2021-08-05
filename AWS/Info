@@ -1,0 +1,208 @@
+
+AMI's are region specific.
+
+AWS havs regions everywhere.. i.e where datacenter resides example: mumbai
+
+Region is a cluster of DataCenter's
+
+Region names can be: us-east-1
+
+Most AWS services are region scoped i.e if u r using any service in any region, we can't use that service in another region as data will not present and data will not get replicated.
+
+
+Availability Zones:
+
+Each region has many AZ's (min-2, max-6, usually-3)
+
+AZ's is one or more discrete datacenters with redundant power, networking, and connectivity.
+
+All the AZ's are seperate from each other, so that they are isolated from the disasters (geographically also isolated)
+
+All though AZ's are seperated geographically.. they are connected by a high bandwidth, ultra low latency networking
+
+
+There are 2 Kinds of services:
+
+	1. Global Service
+		Services are not limited to any region.. we can access these services in all regions.
+		Example:
+			1. Billing, IAM..
+
+	2. Region Service
+		These are region specific services. i.e we can't access the region specifc services in another region.
+		Example:
+			1. EC2
+
+
+Scalability:
+
+1. Vertical Scalability
+2. Horizantal Scalability
+
+Vertical Scalability is very common for non-distributed systems such as Database
+
+
+Services Types: (Not sure of below)
+
+1. region
+	a. EC2
+	b. Volumes
+	c. SecurityGroup
+	d. AMI
+
+2. AZ
+	a. Subnet
+	
+
+3. Global 
+
+
+
+Amazon Services, product release:
+
+	1. SQS
+	2. S3
+	3. EC2
+
+
+AWS is a IAAS, but few services like elastic bean stalk is a PAAS
+
+
+
+
+
+AWS Limits:
+
+	1. Exponential Backoff 
+	2. Request to increase the quota
+
+
+
+Passing credentials to AWS CLI:
+
+CLI will look for credentials in the following order:
+
+	1. flags i.e --region, --profile, --output
+	2. Environment Variables
+			AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+	3. CLI Credentials file
+			~/.aws/credentials
+	4. Config file
+			~/.aws/config
+	5. Container credentials (EC2)
+	6. Instance Profile credentials
+
+
+Passing credentials to AWS SDK:
+
+SDK will look for credentials in the following order:
+
+	1. Environment Variables
+			AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_SESSION_TOKEN
+
+	2. Java System Properties - aws.accessKeyId, and aws.secretKey
+	3. Credentials Profiles - ~/.aws/credentials
+	4. ECS Container credentials - For ECS
+	5. Instance Profile Credentials - Used on EC2 Instances
+
+
+You can configure your Auto Scaling group to send notifications to Amazon SNS when a scaling event, such as launching instances or terminating instances, takes place. Amazon SNS sends a notification with information about the instances to the email address that you specified.
+
+
+
+Every AZ will have a subnet.
+
+
+Zone Level:
+	1. EC2
+	
+Region Level:
+
+Global level:
+
+
+
+SDK and CLI will automatically sign the requests we send, other than these requests, we have to manually sign the requests.
+
+To manually sign the requests, we have to use SigV4 (Signature V4), this is an AWS Protocol.
+
+
+Serverless and server services,
+
+Payment:
+
+	In serverless services we don't pay for the allocated resources like cpu, memory..., but the requests, IOPS,... like suppose Aurora DB where based on number of reads/writes
+
+	Anthena is a serverless service... U pay for number of queries we do on S3 storage.
+
+
+AWS Infrastructure:
+
+	1. AWS Region (us-east-1)
+		a. Cluster of datacenters
+		b. Most of the services are Region specific
+	2. AWS AZ's (us-east-1a, us-east-1b)
+		a. Each region have AZ's (2 <= AZs <= 6), usually 3 AZ's per region
+		b. Each AZ is one or more Datacenters with redundant power, network, and connectivity
+	3. AWS DataCenters
+	4. Edge Locations
+
+Question:
+1. Is it possible to have inter region communication? i.e Can EC2 is region-1 can communicate with EC2 in region-2 ?
+
+Answer:
+
+Unfortunately, what are you asking is not supported at this time. Each Amazon EC2 region is designed to be completely isolated from the other Amazon EC2 regions. This achieves the greatest possible fault tolerance and stability.
+
+When you view your resources, you'll only see the resources tied to the region you've specified. This is because regions are isolated from each other, and we don't replicate resources across regions automatically.
+
+All communication between regions is across the public Internet. Therefore, you should use the appropriate encryption methods to protect your data.
+
+For example, you can create a VPN connection between 2 EC2 instances (each one in one region) and send encrypted traffic over this VPN. Please have a look on the following links.
+
+
+MFA:
+
+	MFA Device Options:
+
+		1. Virtual MFA Device
+		2. U2F (Universal Second Factor)
+			This is a Physical Device
+		3. Hardware key FOB MFA Device
+
+
+AWS Shield is a managed Distributed Denial of Service (DDoS) protection service that safeguards applications running on AWS. AWS Shield provides always-on detection and automatic inline mitigations that minimize application downtime and latency, so there is no need to engage AWS Support to benefit from DDoS protection. There are two tiers of AWS Shield - Standard and Advanced.
+
+
+AWS is a pool of resources, i.e it is having many services and for every service to communicate with other, The services must need permission (through role)
+
+If any service is failing to communicate with Other service, First step in debug processs is ensure that the service is having IAM Role with proper permissions.
+
+
+Principal. A principal is a person or application that can make a request for an action or operation on an AWS resource. The principal is authenticated as the AWS account root user or an IAM entity to make requests to AWS.
+
+
+Command to list all service codes of all services:
+
+	aws service-quotas list-services
+
+
+Yaml Inline Concept:
+
+	---
+	- name: hello this is in-line example
+	  command: |
+	      ls
+	      echo "Running second command"
+	      echo "Started Building the application..."
+
+
+A principal is a person or application that can make a request for an action or operation on an AWS resource.
+
+If aws lambda want to read data from S3 Bucket... then lambda is Principal and S3 is Resource.
+
+
+ToDo:
+	1. https://links.datacumulus.com/aws-certified-dev-pt-coupon
+
+

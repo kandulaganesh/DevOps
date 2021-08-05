@@ -1,0 +1,23 @@
+IAM is useful for only web apps, But if we want sign-in and sign-up option for Mobile Apps as well, then Cognito supports.
+
+It is a Decentralized managed authentication.Sign-up, Sign-in integration for apps.
+
+Social Identity Provider eg: Google, Facebook...
+
+Cognito User Pools:
+
+	User directory with authentication to IpD to grant access to your app.
+
+Cognito Identity Pools:
+
+	Provide Temporary Credentials for users to access AWS Services.
+
+
+Cognito Sync:
+
+	Syncs User data and preferences across all devices.
+
+
+WebIdentity Federation:
+
+	

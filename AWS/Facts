@@ -1,0 +1,67 @@
+1. Load Balanced Env launch EC2s behind an ELB managed by an ASG.
+
+2. The service checkip.amazonaws.com provides the public IP address of the client making the request.
+
+	Use checkip.amazonaws.com to retrieve public IP address
+
+
+
+Below command will open port and protocol id
+aws ec2 authorize-security-group-ingress --group-id <sg-id> --port <port-id> --protocol <tcp/udp> --cidr <ip/32>
+
+
+aws ec2 describe security-groups --group-ids <id1,id2> --output fileName
+
+
+
+169.254.169.254
+
+http://169.254.169.254/latest/meta-data/
+
+
+
+Specific domain, such as example.com, and its subdomains (acme.example.com, zenith.example.com).
+
+
+
+All Services or terms:
+
+	1. Route 53
+	2. ELB
+	3. ASG (Auto Scaling Group)
+	4. EC2
+	5. Security Groups
+	6. RDS
+	7. S3 storage (logs, AppFiles)
+	8. Cloud Watch
+	9. Availability Zone
+	10. Dynamo DB
+	
+
+Availability Zone:
+
+	1. Each on different power grids
+	2. They have different flood profiles
+
+	So That if anything affect AZ.. it will not affect other AZ's
+
+
+If you get ThrottlingException, use Exponential Backoff
+
+
+EC2:
+
+1. EBS
+2. Instance Store (We have to do)
+3. Security Group
+4. Elastic Network interface
+5. Elastic Ip address (For above interface)
+
+
+
+
+
+References:
+
+1. https://aws.amazon.com/premiumsupport/knowledge-center/elastic-beanstalk-pass-variables/
+2. https://aws.amazon.com/serverless/

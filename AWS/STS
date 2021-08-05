@@ -1,0 +1,48 @@
+AWS Security Token Service (AWS STS) is a web service that enables you to request temporary, limited-privilege credentials for AWS Identity and Access Management (IAM) users or for users that you authenticate (federated users).
+
+
+STS is a global service
+
+
+Helps in getting temporary Credentials
+
+Decode the error, I want the decode the cryptic error message. 
+
+MFA From CLI:
+
+	1. To use MFA with CLI, u must create temporary session
+	2. To Do so, run the STS GetSessionToken API Call
+
+
+STS will return following details, when request is sent:
+
+	1. AccessKeyId
+	2. SeceretAccessKey
+	3. SessionToken
+	4. Expration
+
+It helps in getting temporary credentials from "Roles, Users".
+
+
+Commands:
+
+	aws sts get-session-token
+
+		This will get the temporary credentials from an user.
+		
+		This will get creds from a MFA/Non-MFA Enabled user, both.
+
+	aws sts assume-role
+		This will get creds from the role.
+
+aws sts assume-role --role-arn arn:aws:iam::418375135970:role/test_role1 --role-session-name "test_session" --profile=test --duration-seconds 900
+
+Miscellaneous:
+
+	1. aws sts get-caller-identity
+			Get the info of caller
+	2. 
+
+Reference:
+
+	1. https://medium.com/@devopslearning/introduction-to-aws-security-token-service-sts-b3049aade3c1

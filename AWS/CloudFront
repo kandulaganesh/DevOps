@@ -1,0 +1,118 @@
+It is a CDN (Content Distribution network).. Creates Cached copies of your website at various edge locations around the world.
+
+
+Requests for content are served from the nearest edge location.
+
+
+CloudFront origin can be: Route53, ELB, EC2, S3
+
+Two types of distribution:
+
+	1. Web (Websites)
+	2. RTMP (Streaming media)
+
+
+CloudFront distributes the cached copies at EdgeLocations.
+
+EdgeLocations aren't just for read, but also for PUT request.
+
+TTL Defines how frequently cache need to be refreshed.
+
+
+Invalidating the cache means forcely refresing the cache.
+
+
+Lambda@Edge allows us to pass each request through a lambda to change the behaviour of request.
+
+
+CloudFront can be used as Ingress.
+
+It is a Global Service.
+
+
+It also provides DDOD, integration with sheild, AWS WebApplication firewall.
+
+Expose external HTTPS.
+
+
+Private network from Edge Location to origin
+
+Improve latency and reduce the pressure on main/origin resources.
+
+
+CloudFront Origins:
+
+	1. S3 Bucket
+	2. Custorm origin
+		a. EC2 Instances
+		b. ELB
+		c. S3 Website
+
+How CloudFront will commnicate with S3:
+
+	By Using "Origin Access Identity" + S3 Bucket Policy
+
+To Use EC2/ALB as origin, EC2 must have public ip for Edge to send request.
+
+
+Geo restriction:
+
+	CloudFront can restrict that these countroes are not allowed to access, i.e we can have white list and black list.
+
+
+CloudFront Cache depends on:
+
+	1. Headers
+	2. Session cookies
+	3. Query String Parameters
+
+
+CloudFront Invalidations help in clearing the cache
+
+
+CloudFront Signed URL/Cookie
+
+
+CloudFront Protects from the DDos attacks through Sheild.
+
+Communication from CloudFron to the AWS Services happen over the AWS Private Network.
+
+Origin Access Identity:
+
+	For a cloudFront to send a request to S3, it should need access (permission) for accessing the data, that's where we use Origin Access Identity which is a role for CloudFront
+
+CloudFront can restrict the certain users based on geo-location
+
+Can have whitelist and Blacklist
+
+
+CloudFront can be used for both Reading and Writing
+
+
+CloudFront Cache can be used for static and dynamic, w ecan achieve dynamic through headers, like for these values send these pages
+
+
+Invalidations in CloudFront helps in clearing the cache from CloudFront
+
+At CloudFront:
+
+	1. Force to use only HTTPS
+	2. Redirect HTTP to HTTPS
+
+
+Origin Protocol policy:
+
+	User <--> CloudFront (We can mention HTTP to HTTP and HTTPS to HTTPS) or (HTTPS only) <--> Origin
+
+	S3 Origin supports only HTTP, not HTTPS
+
+Have Cloud Signed URL and Cloud Signed Cookie
+
+
+CloudFront OriginGroup
+
+	In Origin group w'll have more than one origin, i.e We can use second origin in fail-over scenario
+
+
+
+

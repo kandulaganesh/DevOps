@@ -1,0 +1,56 @@
+Custom image
+AMI
+Containers on BeanStalk
+
+
+Think of SSh Key's => public and private key
+
+
+LoadBalancer, and it's types i.e Applcation and N/W LoadBalancer
+
+	https://docs.aws.amazon.com/AmazonECS/latest/developerguide/load-balancer-types.html
+	https://www.youtube.com/watch?v=T4Df5_cojAs&t=147s
+
+
+
+What are the ways of Https i.e one is SSL.. and what abt other ways .. ?
+
+
+What!!!!
+
+I thought ELB acts as reverse proxy... , but traffic will goto ELB and from there reverse proxy and then to instance What!!!!!
+
+	Reference:
+		1. https://www.youtube.com/watch?v=BeOKTpFsuvk
+
+ELB:
+
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/load-balancer-types.html
+
+
+StepFunctions
+
+
+Amazon Cognito..
+
+IAM:
+
+	https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
+
+
+Permissions Boundary
+
+1. How to migrate services from one region to another
+
+
+In security Group all rules are evaluated before they allow a traffic. (what does it mean)
+
+
+Inter Account services communication.. i.e Resource-1 in User-1 communicates with Resource-2 in User-2
+
+
+ deduplication ID:
+
+ 	SNS ans SQS
+ 	
+ 	https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/using-messagededuplicationid-property.html

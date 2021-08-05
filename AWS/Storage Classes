@@ -1,0 +1,236 @@
+Block storage provides lowest possible latency
+
+
+File(NAS), Block(SAN) and Object storage network
+
+
+ephemeral storage (Non-Persistent Storage)
+
+Ephermeral storage is directly attached to the devices... i.e like storage is attached to the server and VM's running on the Server will share the storage.
+
+
+Ephermeral storage directly sits on the machine, but Block storage are attached to the machine..... and we mount this block storage to the devices.
+
+
+DAS(Direct Attached Storage)
+	1. It is directly attached to the storage... and it can't be used for sharing
+
+
+NAS(network Attached Storage) (Also called file based Storage)
+	1. Cheap (more costly than DAS)
+	2. It is Sharable across the devices like 10 employees needs common storage for accessing files
+	3. centralized control of files
+	4. Data replication
+
+	Cons:
+		1. Network Attachment...  Latency happens
+
+
+FIle Based and Block Based Storage:
+
+
+In Block Based storage, data stores in block... like suppose there is a file and we stored it in 100 blocks, later if we edit the file.. then system will change those 4 blocks that need's to be changed
+
+Block based storage happens via LAN...
+
+Object Storage:
+
+	1. Here we have objects..
+
+		Each object have following components
+			a. ID
+			b. MetaData (Authors of file, permissions, date of creation.. last modified...)
+			c. Blob (Data.. i.e video.. file...)
+			d. Can't update a specific, It will delete whole file and upload a new file
+			e. Used for like write-once and read-many times
+			f. Data request of transfer happens via HTTP Request
+			g. Used for Static storage...(photos, video,websites,files...) CDN
+
+
+
+In AWS, FileStorage is Provided by EFS
+		Block Storage is Provided by EBS
+		Object storage is Provided by S3
+
+
+EBS is a network drive, not a physical drive
+
+It uses network to communicate with the instances, so there will be some latency.
+
+
+Storage is limited to AZ's
+
+if we want to use storage in another region, create a snapshot.
+
+Volume Types:
+
+	1. GP2 (SSD)
+		1GiB - 16 TiB
+	2. IOI (SSD) (4GiB to 16GiB)
+	3. STI (HDD)
+	4. SCI (HDD)
+
+EBS volume 6 types:
+
+	1. gp2 / gp3 (SSD)
+		General purpose SSD volume that balances price and performance
+	2. io1 / io2 (SDD) (Provisioned IOPS)
+		Highest Performace SSD, low latency used for mission critical applications.
+		Choose this when we need sustained IOPS, when applications need more than 16,000 IOPS
+		4GiB to 16TiB
+		max IOPS we can get is 64,000IOPS for nitro EC2 instances and 32,000 for other
+		Can increase IOPS independently from the storage
+		io2 are more durable and have more IOPS per GiB
+		io2: MAX IOPS: 256,000 and IOPS:GiB ratio 1,000:1
+
+	3. st1 (HDD)
+		low cost but frequently accessed data
+	4. sc1 (HDD)
+		low cost, less frequently accessed data
+
+SSD -> 1GB to 16TB
+
+HDD -> 125MiB to 16TB, IOPS and throughput are less
+
+NotSure (But correct):
+	Storage size and BlockSize are related. (kind of 1-1)
+
+gp3:
+
+	Baseline of 3000IOPS and throughput of 125MIB/s
+	Can increase Upto 16,000 IOPS and throughput of upto 1000MIBS Independently (IOPS and througput are not linked)
+
+gp2:
+
+	Small volumes can burst upto 3000IOPS
+	Size of volume and IOPS are linked, max IOPS 16,000
+	if we increase the volume, IOPS also increase, i.e 3 IOPS per 1GB
+
+
+EBS volumes are characterized into:
+
+	1. Size
+	2. IOPS
+	3. Throughput
+
+
+only gp2/gp3 and io1/io2 are used as boot volumes
+
+In gp2, throughput and IOPS are linked, i.e we can't increase IOPS only alone
+
+In gp3, throughput and IOPS are not linked, i.e we can change IOPS alone
+
+EBS Volumes are characterized in Size, IOPS, ThroughPut
+
+For Boot Volumes, use GP2 and IO1
+
+
+We use only SSD as boot volumes, not HDD
+
+On stopping/terminating the instaces, instance store will be lost.
+
+
+Limitations of EBS is, at a time only one instance can mount.
+
+
+EFS (Elastic File system)
+
+	Managed NFS can be mounted on many EC2 instances
+
+	It is a region limited.
+
+
+EBS Snapshot:
+
+	Make a EBS Volume snapshot, we can copy snapshots across regions
+
+	AWS Snapshots scope is Region level
+
+
+EBS Multi Attach:
+
+	io1 and io2 family supports
+
+	All Applications have full permissions
+
+	More than one instance can attach the EBS Volume
+
+NFS:
+
+	Managed network file system
+
+
+Huge difference between EBS and EFS is EBS is scoped to AZ's and EFS is scoped to Region
+
+
+EFS can be mountable accross multiple instances
+
+
+Windows Systems cannot mount EFS
+
+EFS scales automatically, pay-per-use
+
+EFS is server less
+
+EFS life cycle:
+
+	Standard: Frequently accessed files
+	InfrequentAccessFiles: 
+
+For less storage but need more IOPS, then we can use EFS
+
+
+
+IOPS and Throughput:
+
+	IOPS:  Number of read and write operations per second
+
+		example: 1000IOPS -> 1sec we can read/write 1000 blocks of data
+
+	Throughput: Number of bits read or written per second
+
+		example: write/read 5MB per second
+
+	File size has no affect on IOPS...
+
+
+
+GP2:
+
+	usually IOPS = 3 * size33333
+
+
+Latency and throughput work hand-in-hand
+
+
+SSD:
+
+	1GB - 16TG
+
+	gp3:
+		Baseline of: 3000IOPS
+		25MiB/s
+
+		And we can increase the IOPS upto 16000IOPS and throughput upto 1000MiB/s independently
+
+	gp2:
+
+		burst upto 3000IOPS
+
+		Size of volume and IOPS are linked
+
+
+
+EBS, when ever we mount, we have to format it to required filesystem
+
+NFS has it's own file system
+
+EBS is provisioned, EFS and S3 are scaled automatically
+
+
+EBS Supports encryption, i.e while creating volume, we can choose option to encrypt the volume
+
+If we want to encrypt the existing volume(in use volume), then we have to create a snapshot and encrypt the shapshot and create a volume from it.
+
+
+

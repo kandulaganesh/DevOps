@@ -1,0 +1,137 @@
+
+
+EveryThing In:
+
+	1. VPC
+	2. Subnet
+
+
+
+Elastic Network Interfaces (ENI) are limited to AZ's i.e we cannot attach a us-east-1 ENI to us-east-2 EC2
+
+Elastic IP's are region specific..., i.e we can associate this ElasticIp to ENI in any AZ.
+
+EC2 are limited to AZ
+
+
+Volumes are limited to AZ's i.e we cannot attach us-east-1 Volume to us-east-2 Instance
+
+
+Subnets are limited to AZ.
+
+We can have many subnet's in an AZ.
+
+NACL's are limited to Region
+
+Security Groups are limited to Regions. i.e We can attach EC2 instance in AZ-1, AZ-2 to same Security Group.
+
+NAT's are limited to AZ's.
+
+VPC's are limited to Region
+
+AMI's are region specific.
+
+T2/T3 are burstable instances, M types are balanced.
+
+IGW are limited to a region
+
+STS is a Global Service.
+
+Router's are limited to region. i.e Route Tables are also limited to Region
+
+
+LoadBalancer's are limited to Region... while creating we can select to which AZ's load need to be balanced(Cross region)
+
+
+TargetGroup's are limited to Region.
+
+
+A Subnet must Associate to a route table.
+
+A subnet can only be associated with one route table at a time.
+
+A snapshot is constrained to the AWS Region
+
+ASG's are region specific.
+
+CodeCommit is specific to region
+
+Elastic Cache is AZ specific
+
+Route53 is a GlobalService.
+
+RDS is region specific (As we assign in which VPC this RDS Belongs)
+
+S3 is a Global service, but Buckets we create are region specific. But S3 bucket's are not in any VPC.
+
+CloudFront is a Global Service.
+
+IAM is Global service
+
+WAF (Web Application Firewall) is a Global Service
+
+What is a Serverless:
+
+	While we create any service, we don't think of underlying infrastructure, ofcourse, we may have to think of the resources like this much amount of memory and VCPU's. (Resources Capacity for the service)
+
+
+RDS is not a serverless, because while creating RDS, we have to think of what type of EC2 instance we need to run it on.
+
+Serverless Resources:
+
+	Compute:
+		1. AWS Lambda
+		2. AWS Fargate
+
+	Storage:
+		1. S3
+		2. DynamoDB
+		3. Aurora (Only Aurora is serverless, restall are not serverless)
+		4. RDS Proxy (Not RDS)
+
+	Application Integration:
+		1. StepFunctions
+		2. SNS
+		3. SQS
+		4. AppSync
+		5. API Gateway
+		6. EventBridge
+
+
+Non VPC:
+
+	1. S3
+	2. DynamoDB
+	3. SQS
+	4. SNS
+	5. all self managed (CloudWatch, CloudFront)
+
+
+VPC:
+
+	1. Mostly all (computing, storage, networking, security)
+	2. RDS
+	3. IGW (We can attach IGW to one VPC only)
+	4. Elastic Cache
+
+
+Storages (EBS) are limited to AZ's
+
+EFS (NFS) are Region.
+
+
+EFS no capacity planning, scales automatically...
+
+CloudFront is a GlobalService.
+
+Storage Tiers,
+
+	Standard for frequently accessed files
+
+	Infrequent access (EFS-IA)
+
+
+Reference:
+
+	1. https://jayendrapatil.com/aws-global-vs-regional-vs-az-resources/
+
