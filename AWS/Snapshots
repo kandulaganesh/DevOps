@@ -1,0 +1,26 @@
+Snapshots can be shared with other accounts by clicking add permissions in snapshot section
+
+Snapshot of an encrypted resource is encrypted one
+
+and Snapshot of an unencrypted resource is Unencrypted one
+
+Snapshots are like a copy, we take backup
+
+
+While creating few resources, they ask for encryption like:
+
+	1. Volumes
+		For these if volume already exists, then create a snapshot and from snapshot while creating a volume, choose enable encryption.
+
+For other Resources like RDS, while creating snapshot only enable the encryption.
+
+We can copy snapshot from one region to another region
+
+
+Have a snapshot
+Create a copy of that snapshot and while creating copy it will prompt for encryption
+
+If the source snapshot is encrypted, the destination snapshot will always be encrypted. You can, however, choose to encrypt it with a different master key.
+
+
+Visibility is region.

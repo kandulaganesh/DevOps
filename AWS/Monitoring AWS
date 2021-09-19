@@ -1,0 +1,53 @@
+AWS Cloudwatch:
+
+	Metrics
+	Events
+	Logs
+	Alarms
+
+AWS X-Ray:
+
+	Troubleshoot Application performance and errors
+	Distributed tracing of microservices
+
+AWS CloudTrail
+
+	Monitoring of all API Calls
+
+
+By default we get EC2 Instance metrics every 5min
+
+But with "detailed monitoring" we can get the metrics every 1min
+
+EC2 memory usage by default is not pushed, if we want to do that we have to use custom metric
+
+CoustomMetrics:
+
+	1. Like Dimensions of Instances
+		a. InstanceId
+
+
+High Resolution 
+
+	We can get Metrics every 1 second
+
+	API Call parameter to enable the HighResolution is "StorageResolution"
+
+
+API Call we use for posting Metrics is "PutMetricData"
+
+Use exponential backoff in case of throttle errors
+
+GroupMetrics:
+	When you enable Auto Scaling group metrics, your Auto Scaling group sends sampled data to CloudWatch every minute. There is no charge for enabling these metrics.
+
+
+An Alarm on a High Resolution Metric can be triggered as often as 10sec
+
+
+CloudWatch Logs never expire
+
+
+
+
+

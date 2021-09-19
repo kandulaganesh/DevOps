@@ -1,0 +1,205 @@
+AWS CloudFormation gives you an easy way to model a collection of related AWS and third-party resources, provision them quickly and consistently, and manage them throughout their lifecycles, by treating infrastructure as code. A CloudFormation template describes your desired resources and their dependencies so you can launch and configure them together as a stack. 
+
+You can use a template to create, update, and delete an entire stack as a single unit, as often as you need to, instead of managing resources individually. You can manage and provision stacks across multiple AWS accounts and AWS Regions.
+
+
+Versioning the Infra, so we can rollback to previous infra easily.
+
+It is a Json format.
+
+
+Provides:
+
+1. ELB
+2. AutoScaling Groups
+3. RDS Database
+4. EC2 Instance
+5. Monitoring(Cloud Watch,SNS)
+6. In-Place/Blue-Green Deployment Strategy
+7. Security (Password rotation)
+8. Can run dockerized environment
+
+
+IAAS
+
+User  --(CloudFormation)--> Lambda  --> AWS Resources Provisioning
+
+	Lambda will provision the resources
+
+
+CloudFormation can be in 2 formats:
+
+	1. Json
+	2. Yaml
+
+
+With CloudFormation... we can update the resources..
+
+There are two ways of StackUpdate:
+
+	1. Direct Update
+	2. executing change sets
+
+Nested Stacks:
+
+	We can refer another CloudFormation Template in another Template...  this way modularity and reusability..
+
+Few Stuff:
+
+	1. rollBack
+	2. Drift Change
+
+
+Auto RollBack happens when stack formation fails...
+
+CloudFormation is a declarative ay of outlining the AWS Infrastructure
+
+
+Templates are versioned, i.e can't edit the previous one, but we can create a new version of it.
+
+Template Components:
+
+	1. Resources
+		It's a mandatory section where we declare AWS Resources.
+	2. Parameters
+		Dynamic inputs to template
+	3. Mappings
+		Static inputs to template
+	4. Outputs
+		Export some stuff, so that other templates can use it
+	5. Conditionals
+		like a if condition
+	6. MetaData
+
+
+Template Helpers:
+	1. References
+	2. Functions
+
+Parameters:
+	Inputs to CloudFormation templates
+	They are very important if we want to re-use
+
+Mappings:
+
+	They are fixed values in CloudFormation
+	These also same like key-value variables where we store config, but these are statically written in CloudFormation Template
+
+
+Difference Between Mappings and Parameters:
+
+	1. If we know the data before, then we can statically write them in CloudFormation
+	2. If Data is not known before, and data can change frequently, then use Parameters as we pass while creating Stack
+
+When we have parameter section in Template, it will prompt while creating the stack, it will ask for parameter values.
+
+
+Functions:
+
+	For displaying, we use it like Fn::Ref, but while using in templates, !Ref
+
+	All functions will start with ! (Negation)
+
+	1. Ref
+		We use "Ref", if we want to get the Id of the resource.
+		We use "Ref" for getting values from the Parameters
+		So basically we are referring the someother resource here.
+		Usage:
+			!Ref
+
+		Example:
+
+			Suppose we want to associate ElasticIP to an instance then,
+
+			Resource:
+
+			    SecurityGroupResourceName:
+			        Type: AWS::EC2::SecurityGroup
+			        ...
+			        ...
+
+			    EC2ResourceName:
+			        Type: AWS::EC2::Instance
+			        Properties:
+			            ImageId: ....
+			            SecurityGroups:
+			                - !Ref: SecurityGroupResourceName
+
+
+	2. GetAtt
+
+			Ref will return only the Id of the resource, but with GetAtt we can get other attributes as well.
+
+			Example:
+
+				!GetAttr EC2Instance.AvailabilityZone
+
+	3. FindInMap
+			Return named value from the specific key, used for accessing the Mapping Values
+
+	4. Join
+			Joins values by delimited
+				!Join [":",[a, b, c]]
+
+				Above returns a:b:c
+	5. Sub
+			Used for substituting the values
+
+
+
+Outputs:
+
+	This section is optional
+	Through which we can import output values to other templates (First we have to export them)
+	i.e We have two templates, and if we want to share the resourceId in one template to another template, then we use Outputs
+	Example:
+		1. We want the SubnetId or VPCID
+
+	Usage:
+		!ExportValue
+			This function will export the data
+		!ImportValue
+			This function will take the exported value
+
+
+Ref we can use with-in the template, but Outputs we can use if we need value from another template
+
+Conditions:
+
+	Used to control the resources creation
+
+
+	Example:
+
+		Conditions:
+		    CreateProdResources: !Equals [ !Ref EnvType Prod ]
+
+		Resources:
+		    MountPoint:
+		        Type: "AWS::EC2::VolumeAttachment"
+		        Condition: CreateProdResources
+
+		Above MountPoint will  be created only if CreateProdResources will be true
+
+
+RollBack:
+
+	We have an option to rollback if we don't want to do
+
+
+StackSets:
+
+	If we want to update stacks at multiple regions or multiple accounts
+
+
+Drift:
+	If we manually change any resource then cloudFormation will not protect....
+
+	So we can use this Drift to see how Stack got differ from the one we created using template
+
+
+
+CloudFormation references a template from Amazon S3, no matter what. If you upload the template from the AWS console, it gets uploaded in Amazon S3 behind the scenes, and CloudFormation references that template from there.
+
+
+No need of mentioning the order of creating resources

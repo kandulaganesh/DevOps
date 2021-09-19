@@ -1,0 +1,2 @@
+An Elastic IP address is a static IPv4 address associated with your AWS account in a specific Region. Unlike the auto-assigned public IP address, an Elastic IP address is preserved after you stop and start your instance in a virtual private cloud (VPC).
+

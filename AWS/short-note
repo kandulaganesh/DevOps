@@ -1,0 +1,9 @@
+KMS:
+
+1. Ecrption of keys.. data.. , aywhere u see encrypt data option.. it will use KMS
+
+Packer Software
+
+	Use for building the custom platform.
+
+	like Generate Custom AMI

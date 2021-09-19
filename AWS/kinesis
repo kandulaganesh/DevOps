@@ -1,0 +1,118 @@
+Amazon kinesis is a AWS fully managed solution for collecting, processing, and analyzing streaming data in the cloud.
+
+Four types of streams:
+
+1. Kinesis Data Streams (Shards, which process the data)
+	Data in stream will still there for 24hrs even after consumer consumed.
+	Can have multiple consumers
+	We have to write code for consuming code.
+	Kinesis Data Streams made of Shrads
+	Data will be distributed across all Shrads
+	before we start processing, we have to give all shards
+	We have to provision shards ahead of time
+	Producer will produce data in Records and each record will have partition_key and data blob.
+	partition_key will determine to which shard the data should go
+	Billing is per Shard
+	Retention is 1Day default
+	Use partitionKey in such a way that the data will be streamed to all shards evenly
+		Example: If partitionKey based on browser, most of them uses chrome and this will stream so much to shrads which cause ProvisionedThroughputExeeded
+		Have retries Exponentially
+
+	Consumers for this stream can be
+		a. AWS Lambda
+			Lambda uses GetBatch API for reading data
+		b. Kinesis Data Analytics
+		c. Kinesis Data Firehouse
+		d. Custom Consumer
+		e. KCL (Kinesis client Library)
+
+	Classic Shared FanOut Consumer
+		In this all consumers will share bandwidth (i.e all consumers share 2MBPS, with increase in consumers, throughput will be decreased)
+		API used by consumers for getting data from shards is "GetRecords"
+		Here we have Poll model
+		Less Cost
+
+	Enhanced Fanout Consumer
+		In this bandwidth will be there per customer per shard
+		API used by consumers is "SubscribeToShard"
+		So all consumers will have 2MBPS
+		Here we have Push Model
+		High Price
+
+
+
+	Scaling Kinesis Data Stream:
+		1. If we have a hot shrad(Data is getting streamed at very high rate), then we can split the shrad into 2 shards, so by splitting we increase throughput
+			Increasing the shards count will increase the money
+		2. If the shrads are having less stream, then we can merge those shards, which will save money
+
+
+	Kinesis Data Stream, we manage it on our own
+
+	RealTime
+		There will be no delay
+
+
+2. Kinesis Firehose Delivery Streams ()
+	Data will go away or erased from firehouse once it got consumed.
+	Can have only one consumer.
+	Here we don't have to write any code for consuming code.
+	Pay only for what is injested.
+	Producers:
+		1. Kinesis Data Streams
+		2. CloudWatch
+		3. Kinesis Agent
+		4. All producers of Kinesis Data Stream
+	Destinations:
+		AWS Destinations:
+			1. S3
+			2. RedShift (Happens through S3)
+			3. Elastic Search
+		Third Party Destinations:
+			1. DataDog
+			2. MongoDB
+			3. .....
+		Custom Destinations:
+			1. HTTP Endpoint
+
+		It is fully managed service
+
+		Near RealTime (60sec latency will be there)
+		Pay for what data goes through
+
+3. Kinesis Data Analytics.
+	Input is Firehouse or DataStreams
+	The data that pass through Data Analytics is run through custom SQL
+	Sources:
+		1. Kinesis DataStream
+		2. Kinesis FireHost
+
+	and we can run SQL commands for analyzing the data
+	Fully managed
+	No AutoScaling
+	No Provisioning
+
+4. Kinesis Video Analytics.
+	Producers are video generator's i.e camera...
+
+
+
+We have Kinesis agent for producing data
+
+
+
+Kinesis Producers:
+	1. Kinesis agent will monitor log files and stream them to Kinesis.
+
+
+Kinesis Client Library:
+	It is a JavaLibrary, used for reading data from the Kinesis Data Stream
+	Each Shard will be read by only one KCL Instance
+
+	4 Shards means Max of 4 KCL Instances
+
+	KCL update progress in DynamoDB
+
+
+
+

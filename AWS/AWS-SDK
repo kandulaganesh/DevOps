@@ -1,0 +1,20 @@
+AWS SDK is a set of API libraries, that let you integrate AWS services to your applications.
+
+
+We (Here we can be human, code) can communicate with AWS Components by three ways:
+
+	1. AWS Console
+	2. AWS Commands
+	3. AWS SDK
+
+
+Use exponential BackOff if we get errors;
+
+	1. 5xx server errors
+	2. Throttling errors
+
+Don't use exponential Backoff for 4xx errors
+
+	4xx -> Client errors
+
+	5xx -> Server errors

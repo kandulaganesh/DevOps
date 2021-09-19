@@ -1,0 +1,88 @@
+Logs API calls between services.
+
+When we want to know whom to blame.
+
+Used to monitor api calls and actions made on an AWS account.
+
+It enables governance, compliance, operational auditing and risk auditing
+
+Like when something went wrong .. we can get when.. whom.. who... all these details can be captured
+
+With CloudTrail, you can log, continuously monitor, and retain account activity related to actions across your AWS infrastructure.
+
+CloudTrail provides event history of your AWS account activity, including actions taken through the AWS Management Console, AWS SDKs, command line tools, and other AWS services
+
+
+We can send cloudTrails events to CloudWatch logs...
+
+By default event history keeps 90Days events
+
+
+We can create as many cloudtrails as we can... it will manage two events.. 
+
+	1. Management events
+		Logs of actions on all AWS Resources.. in u r AWS Account
+	2. Data events
+		Logs of S3 and Lambda.. (Frequently used resources)
+		like uploading.. deleting the data in S3
+		Invoking lambda comes under Data events
+		For now Data events supports only S3 and Lambda
+	3. Insight Events
+		Keep Track of any suspicious activities happening on account
+
+
+CloudTrails have too many logs.. it's tough to analyze and monitor the logs.. we AWS Provides Anthena helps in using, managing and monitoring the CloudTrail Logs easily.
+
+
+When u need to know whom to blame.. Just goto CloudTrail
+
+
+
+By Default event history will track all the events that are happening on this account for 90 Days..
+
+
+If we want to all events more than 90Days and also stream them to s3 bucket.. then we use Trail.
+
+
+CloudTrail will be enabled by default.
+
+
+Monitor all API call made by:
+
+	1. SDK
+	2. CLI
+	3. Console
+
+CloudTrail Events:
+
+	1. Management Events
+	2. Data Events
+
+
+Management Events:
+
+	like create delete PUT .... (Mostly all)
+
+Data Events:
+
+	Get request to S3 Objects, we do this operation very frequently, so don't want to mess up
+
+
+Insight Events:
+
+	Will analyze the events and check if any behaviour is anomalous.
+
+Retention period for CloudTrail events are 90Days, if we want to store them beyond, then have to use S3 and Athena
+
+Create a Trail for
+	Insight events
+	Data Events
+	Management events
+
+	and we can redirect logs to S3
+
+
+
+
+You would like to index your XRay traces in order to search and filter through them efficiently. we can achieve this through Annotate
+

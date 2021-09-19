@@ -1,0 +1,67 @@
+AWS Fargate is a serverless compute engine for containers that works with both Amazon Elastic Container Service (ECS) and Amazon Elastic Kubernetes Service (EKS). Fargate makes it easy for you to focus on building your applications. Fargate removes the need to provision and manage servers, lets you specify and pay for resources per application, and improves security through application isolation by design.
+Fargate allocates the right amount of compute, eliminating the need to choose instances and scale cluster capacity. You only pay for the resources required to run your containers, so there is no over-provisioning and paying for additional servers. Fargate runs each task or pod in its own kernel providing the tasks and pods their own isolated compute environment. This enables your application to have workload isolation and improved security by design. This is why customers such as Vanguard, Accenture, Foursquare, and Ancestry have chosen to run their mission critical applications on Fargate.
+
+
+Fargate and lambda are server less and stateless stuff.. i.e it can run only stateless applications
+
+Fargate is a Serverless Container, Don't worry about servers. Run Containers, and pay based on duration and consumption.
+
+
+It is under ECS Console.
+
+
+Fargate has a Cold Starts, If this is an issue, use ECS as it does not have cold starts.
+
+Fargate services/Task can run as long as they can unlike lambda of having limit of 15min.
+
+
+Here there will be no EC2 Instances.
+
+Points:
+
+1. We can create an empty ECS Cluster (Not Provisoned) and then launch Tasks as Fargate
+2. We no longer have to provision, configure, and scale clusters of EC2 instances to run containers
+3. Pay based on duration and consumption.
+
+
+With the EC2 launch type billing is based on the cost of the underlying EC2 instances. This allows you to optimize price by taking advantage of billing models such as spot instances (bid a low price for an instance), or reserved instances (get a flat discount for committing to an instance for a certain time period). However, it is your responsibility to make sure that your containers are densely packed onto instances to get the best use out of them, otherwise you will be wasting money.
+
+With the AWS Fargate launch type billing is based on how many CPU cores, and gigabytes of memory your task requires, per second. You only ever pay for what your task uses, no more paying for EC2 capacity that goes unused.
+
+
+
+
+Fargate vs ECS
+Amazon Elastic Container Service or ECS is Amazon’s container orchestration service that makes it easy to manage containers (running, stop, starting containers, etc) on a cluster of EC2 instances.
+
+ECS has two launch types which determine the type of underlying infrastructure and operations required:
+
+	Fargate Launch Type: This is the mode we chose when we use Fargate. This lets us run the cluster on serverless mode i.e. Amazon manages the underlying cluster. Low operational overhead as well as lower flexibility in terms of resources available compared to the EC2 launch type.
+
+	EC2 Launch Type: In this mode, we get to choose the EC2 instances on which the cluster runs on. We need to manage the underlying cluster ourselves. You get to choose what kind of scaling policies should be applied, what kind of instances to run on etc. Comes with higher operational overhead since you need to manage the cluster.
+
+
+ECS has two launch types that can define how the compute resources will be managed. The traditional EC2 launch type detailed in the overview above utilizes your own EC2 instances. Fargate removes the responsibility of provisioning, configuring and managing the EC2 instances by allowing AWS to manage the EC2 instances.
+
+
+
+Fargate eliminates the need to manage servers, but also puts a requirement of your Task definitions to be stateless. Currently, no volumes can be attached to the containers defined in your Tasks which eliminates some types of containers (such as datastores requiring persistent storage) to be able to run in the ECS environment.
+
+
+
+
+
+Since EC2 instances are not there, don't think VPC, Security Groups.. are not available, In Fargate, we have all these i.e we can apply security group to task.
+
+
+In Fargate, we apply AM, Security Group at task Level.
+
+
+In Fargate, There is no PortMapping as AWS Manages Instances. The Container port and host will be same.
+
+Pricing per: 1min i.e pay atleast 1min and every additional second.
+
+
+We will create a security group, which will secure all the task containers.
+
+

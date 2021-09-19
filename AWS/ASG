@@ -1,0 +1,180 @@
+
+An Auto Scaling group contains a collection of Amazon EC2 instances that are treated as a logical grouping for the purposes of automatic scaling and management. An Auto Scaling group also enables you to use Amazon EC2 Auto Scaling features such as health check replacements and scaling policies. Both maintaining the number of instances in an Auto Scaling group and automatic scaling are the core functionality of the Amazon EC2 Auto Scaling service.
+
+The size of an Auto Scaling group depends on the number of instances that you set as the desired capacity. You can adjust its size to meet demand, either manually or by using automatic scaling.
+
+An Auto Scaling group starts by launching enough instances to meet its desired capacity. It maintains this number of instances by performing periodic health checks on the instances in the group. The Auto Scaling group continues to maintain a fixed number of instances even if an instance becomes unhealthy. If an instance becomes unhealthy, the group terminates the unhealthy instance and launches another instance to replace it.
+
+
+
+Set Scaling rules which will automatically launch additional EC2 instances or shutdown instances to meet current Demand.
+
+It contains a collection of EC2 Instances that are treated as a group as for the purpose of automatic scaling and management.
+
+
+HealthChecks to EC2 instances can be done by either ELB or ASG.
+
+ASG will scale the EC2 Instances via:
+
+	1. Capacity Settings
+
+		In this In ASG we will configure minimum,maximum and desired number of EC2 Instances.
+
+	2. Heath Check Replacements
+
+		ASG will perform health-checks to the Instances, if checks fail, then ASG will kill and create new instances based on min-max settings we gave.
+
+		Not only ASG, but also ELB performs the health-check via http, and if health-check fails, it will pass info to ASg and, ASG will scale.
+
+
+	3. Scaling Policies:
+
+		Scale-out -> Increase/Add Instances
+		Scale-In -> Decrease/delete the Instances
+		Scale-Up -> When u increase the size of instance configuration.
+
+		There are three Scaling Policies:
+
+			1. Target Tracking Scaling Policy
+				Maintains a specific metric at a target value.
+					Example: If CPU Utilization exceed 75%, then add a new instance.
+			2. Simple Scaling Policy
+				This is not recommended, But ASG Scales when an alarm is breached.
+			3. Scaling Policy with steps (Since above is not recommended, so came up with this)
+				Need alarm
+				it is new Version of Simple Scaling Policy
+				Scales when alarm is breached, can escalates based on alarm value changing.
+				i.e if alarm value changes from 1 to 2, then add another instance
+					if alaem value changes from 2 to 3, then add another instance .....
+
+
+
+While Creating the ASG, we have 2 Options
+
+	1. LoadBalancer
+	2. TargetGroup
+
+ELB <--> TargetGroup <--> ASG
+
+TargetGroup:
+
+	Suppose we have two ASG, one is Production and another is Dev.
+
+	We can point ELB to Production ASG and any traffic that is coming to ELB will be routed to production(TargetGroup) ASG.
+
+
+LaunchConfiguration:
+
+	Ok!!!.. ASG will scale the instances.. how ASG knows the configuration(AMI,provision Resources) of newly launching instances...
+
+	A launchConfiguration is an instance configuration template that an autoscaling group uses to launch EC2 instances.
+
+	We can save the Instance launch configuration same as creating the instance except.. Instead of clicking on CreateInstance, w'll click on save Instance Config
+
+
+
+ASG will scale-in (decrease) and scale-out(increase).
+
+
+ASG will automatically register/deregister the instances to ELB
+
+
+ASG will check the cloudwatch alarms and based on that it will scale-out or scale-in the instances.
+
+Cloudwatch alarms can be generated based on traffic, memory,storage,cpu...
+
+
+IAM roles assigned to ASG will also get assigned to instances..
+
+
+ASG will terminate.. not do stop.. or other operations..
+
+
+If ELB mark any instance as unhealthy.. , ASG will terminate them.
+
+
+Scaling Policies:
+
+	1. Target Tracking Scaling
+		Maintains a specific metric at a target value.
+		Here if mention the metric(target) value, it will be enough. Underlying AWS will create alarms for us.
+		Most simple and easy..
+		example:
+			scale-out on average cpu usage more than 60%
+	2. Simple or Step Scaling
+		We must create CloudWatch Alarms
+		Trigerred when an alarm is breached
+		In Simple:
+			It will increment one after the other
+		In Step:
+			It will increment by step we mention.
+		When cloudwatch alarm is trigerred, scale-out
+		Here we can scale the instances by steps i.e add 2 instances more when alarm is trigerred
+		More control on how many instances need to be added/removed
+	3. Scheduled Action
+		Anticipate the scaling option based on known usage patterns
+		example:
+			maintain desired instances to 10 on fridays 3-4pm
+
+
+Scaling CoolDown:
+
+	Cooldown period helps to ensure that your ASG doesn't launch or terminate additional instances before previous scaling activities takesplace.
+
+
+Automatically registers with the load balancer's.
+
+Ensures minimum and maximum number of instances.
+
+
+ASG rules for scaling:
+
+	1. Average CPU Usage
+	2. Number of requests on ELB per instance
+	3. Average Network In
+	4. Average Network out
+
+We can use CloudWatch alarm as triggering for ASG to scale-in/out
+
+
+IAM Roles attached to ASG will get assigned to EC2.
+
+
+ASG terminate the instances that are marked as un-healthy by Loadbalancer.
+
+
+Scaling cool downs:
+
+	The cool down period helps to ensure that your auto scaling group doesn't launch or terminate additional instances before the previous scaling activity takes effect.
+
+	In addition to default, we can also have cooldowns that apply to the specific simple scalong policy. This will override the default.
+
+	Default cooldown period is 300seconds., we can reduce as well.
+
+
+Launch Configuration and Launch Template	
+
+Launch Configuration and Launch template have only the EC2 instance configuration.
+
+From the Launch Templates/Configuration we can launch the instances.
+
+
+AutoScalingGroup use launch configuration for launching the instances.
+
+LaunchConfiguration is a old way of doing... new way of doing is launch template
+
+In Templates
+
+	1. We don't have to create completely new version, we can have versions
+
+We use launch template in both EC2 and ASG, But for launch configuration we it for ASG only.
+
+
+
+
+
+
+
+References:
+1. https://docs.aws.amazon.com/autoscaling/ec2/userguide/AutoScalingGroup.html
+2. https://docs.aws.amazon.com/autoscaling/ec2/userguide/autoscaling-load-balancer.html

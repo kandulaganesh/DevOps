@@ -1,0 +1,21 @@
+It helps in provision,configure, and deploy public and private SSL/TLS certificates for use with AWS services.
+
+ACM Provide 2 types of certificates:
+
+1. Public (Certificates provided by ACM)
+2. Private (Provided by Us, we import these)
+
+ACM can handle multiple domains,subdomains and wild card domains
+
+
+ACM can be attached to following services:
+1. LoadBalancer
+2. CloudFront
+3. API Gateway
+4. Elastic BeanStalk
+
+
+
+Internet -> Route 53 -> ELB(ALB) -> EC2 Instances
+
+Till the ELB communication will be secure, i.e communication will be encripted. From then ELB to EC2, it is insecure

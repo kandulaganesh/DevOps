@@ -1,0 +1,45 @@
+CodeDeploy provides two deployment type options – in-place and blue/green. Note that AWS Lambda and Amazon ECS deployments cannot use an in-place deployment type.
+
+“Canary” is incorrect as this is a traffic shifting option, not a deployment type. Traffic is shifted in two increments.
+
+“Linear” is incorrect as this is a traffic shifting option, not a deployment type. Traffic is shifted in two increments.
+
+
+“In-place” is incorrect as AWS Lambda and Amazon ECS deployments cannot use an in-place deployment type.
+
+
+
+To Deploy applications on EC2 or On Premise through CloudDeploy, we must have an agent on these machines
+
+agent will continously poll the CodeDeploy and check for the new changes and based on it it will take the action.
+
+CodeDeploy will send the appspec.yml file and it will pull code from the source code
+
+appspec.yml which will present at root of source code, will helps in deploying the application
+
+CodeDeploy, Blue/Green only works with EC2 instances (not in on-premise)
+
+CodeDeploy do not provision resources, We have to create resources. (It assumes EC2 already running)
+
+
+CodeDeploy Detect the targets by
+
+	1. EC2 instances using Tags
+	2. ASG Directly
+
+Failed instances will stay in failure state, new deployments will triggered in Failed Instances first
+
+
+In CodeDeploy we have two deployment strategies/types
+
+	1. In-place
+	2. Blue/green
+
+To use CodeDeploy, we have to install CodeDeploy agent on instances (Doesn't matter on-premise or AWS resources)
+
+if a rollback happens, CodeDeploy redeploys the last known good revision as a new deployment
+
+
+
+
+

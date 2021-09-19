@@ -1,0 +1,46 @@
+1. AZ's, regions
+2. Global services and region specific services
+3. IAM
+	a. roles
+		1. Per Application.
+	b. users
+		1. Per Physical Person
+	c. Policies
+	d. Groups
+4. EC2
+	1. Instance Types
+	2. Launch Types
+	3. Instance Status
+		a. Start
+		b. Stop
+		c. Terminate
+		d. reboot
+		e. Hybernate
+	4. UserData
+		a. As root user and only once will be executed
+	5. SSh keys, give 044 permissions for private key
+	6. Rebooting an instance doesn't start a new instance billing period because the instance stays in the running state.
+
+
+5. Features
+	a. SecurityGroups
+		1. Instance or object level
+	b. NACL
+		1. Subnet level
+	c. EVI
+		1. These are virtual interfaces having private ipaddress, we can easily attach and detach from the services.
+	d. EIP
+		1. These are not directly attached to Instance, but use NAT, i.e EIP -> PrivateIp(EVI)
+	e. Storage (Volumes)
+		1. Where all the info of an Instance will be stored in Volumes, we can create a snapshot of an instance and create AMI from it.
+
+
+5. High Availability
+
+	a. Horizantal Scaling
+	b. Vertical Scaling
+	c. High Availability
+		1. Having stuff in multi AZ's
+	MAke sure ELB and ASG have multi-AZ's enabled.
+
+

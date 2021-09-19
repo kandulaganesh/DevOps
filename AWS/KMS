@@ -1,0 +1,27 @@
+Create and manager encryption keys.
+KMS will create , control and rotate encryption keys.
+and use with a variety of AWS services and applications.
+
+KMS integrate with
+
+	1. SQS
+	2. RDS
+	3. codeCommit
+	4. S3
+	5. CodeDeploy
+	6. SNS
+	7. ElasticCache
+	8. X-Ray
+	9. CodeBuild
+	10. Elastic Cache
+	11. Galcier
+	12. DynamoDB
+
+
+CLI Commands:
+
+	1. aws kms create-key
+	2. aws kms encrypt
+	3. aws kms decrypt
+	4. aws kms re-encrypt
+	5. aws kms enable-key-rotation (Only for symmetric keys)

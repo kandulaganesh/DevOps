@@ -1,0 +1,576 @@
+Elastic Bean Stalk:
+
+
+An Elastic Beanstalk application is a logical collection of Elastic Beanstalk components, including environments, versions, and environment configurations. In Elastic Beanstalk an application is conceptually similar to a folder.
+
+
+
+
+1. Web hosting platform
+1. Helps in deploying and managing web-apps on AWS , without worring underlying infra.
+2. This is a platform as a service (PAAS)
+
+	PAAS:
+
+		A platform allows customer to develop, run and manage applications without the complexity of building and maintaining the infrastructure typically associated with developing and launching the app
+
+
+3. Not Recommended for Production Applications.
+4. Supports Multi Tenant Architecture
+
+
+Environment Tier:
+
+	1. WebServer
+	2. Worker
+
+Environment Type:
+
+	1. Load Balancing, autoscaling
+	2. Single-instance environment
+
+
+How to create and deploy application in BeanStalk:
+
+	1. Via Console (eb command)
+	2. UI
+		1. Application -> Environment Tier -> Predefined Configuration (Platform dependencies like php ...) -> environment type.
+
+
+
+Worker will do anything that will take long time, it will poll the SQS and do computing.
+
+SQS:
+
+	Simple Queue Service
+
+	Using this queue, web environment and worker environment will communicate each other.
+
+	Sqsd daemon will be running on worker environment and it will pull the messages from SQS
+
+
+
+Monitoring
+Security
+Auto-Scaling
+Quick Deployment
+
+
+
+We can create as many environemnts as possible.
+
+The WAR or TAR file we upload, it will be uploaded to s3 Bucket
+
+Environment Tier:
+When you launch an Elastic Beanstalk environment, you first choose an environment tier. The environment tier designates the type of application that the environment runs, and determines what resources Elastic Beanstalk provisions to support it. An application that serves HTTP requests runs in a web server environment tier. A backend environment that pulls tasks from an Amazon Simple Queue Service (Amazon SQS) queue runs in a worker environment tier.
+
+
+There are 2 Types of Web Server Environment:
+
+	1. Load Balanced Environment
+	2. Single Instance Environment
+
+
+	Load Balanced Environment:
+
+		This will be useful when we have multiple EC2 instances and we use LoadBalancer(ELB) to balance the load b/w Instances
+
+	Single Instance Environment:
+
+		It is a cost effective as we are running single server
+
+		Public Ip has to be used for routing the traffic to server
+
+
+
+
+To Support the Https traffic in EBS, we need to have the Loadbalancer
+
+
+
+
+By Default "EB", performs In-Place updates
+
+
+Deployment Policy:
+
+
+	By default, your environment uses all-at-once deployments. If you created the environment with the EB CLI and it's a scalable environment (you didn't specify the --single option), it uses rolling deployments.
+
+
+	1. All at Once (Available for both LBE and Single Instance Environment)
+	2. Rolling (Only on LBE)
+	3. Rolling with additional batch (Only on LBE)
+	4. Immutable (Both)
+
+
+	All At Once:
+
+		It is fastest but dangerious because if new version fails, it will be tough to bring back all old verison's
+
+		It will deploy all Instances at a time.
+
+		Fast deployment
+
+
+	Rolling:
+
+		Not all at a time.
+
+		Deploy the new version in batches. Each batch is taken out of service during the deployment phase, reducing your environment's capacity by the number of instances in a batch. 
+
+
+		We will update all at a time, here we will update fdew instances ata time(bucket), and move on to the next bucket once the first bucket is healthy.
+
+		time taking deployment
+
+
+
+	Rolling with Additional Batch:
+
+		In this first w'll create new batch of instances, if they are good then w'll delete the old instances i.e Attach the new batch nd terminate the existing batch
+
+		Rolling with additional Batch's ensure our capacity is never reduced. This is important for applications were a reduction in capacity could cause availabilityy issues for users.
+
+		Time consuming (more than rolling)
+
+	Immutable:
+
+		Create a new ASG with EC2 Instances, Deploy the updated version on new EC2 instances.
+
+		Point ELB to new ASG and delete old ASG and which will terminate old EC2 instances.
+
+		W'll swap out whole ASG when everything is healthy.
+
+		A seperate environment will not be created, in the same environment only stuff will be done.
+
+		Longest Deployment
+
+	By default, your environment uses all-at-once deployments. If you created the environment with the EB CLI and it's a scalable environment (you didn't specify the --single option), it uses rolling deployments.
+
+
+
+
+
+EB - InPlace vs BlueGreen Deployment
+
+	InPlace and BlueGreen Deployments are not definitive in definition and the context can change the scope of what they mean.
+
+	If Blue and Green are in same environment, then it can't be considered as Blue/Green Deployment strategy.
+
+	Both should be on different environment.
+
+	BlueGreen Deployment is not a direct feature available, it is completely manual process.
+
+		I mean we have to manually create another environment, and once it is healthy, change the route to new environment.
+
+
+
+	Blue/Green with Elastic Beanstalk is done by creating a new environment, deploying new EC2 instances running the new code to that new environment, doing a DNS CNAME swap to the new environment, and finally terminating the old environment. Traffic flows to one environment or the other, but not to both at the same time.
+
+	Immutable with Elastic Beanstalk is quite different. In this case there is no new environment. Instead, a new AutoScaling Group (ASG) is added to the original environment, new EC2 instances (with the new code) are launched into that new ASG, they are health-checked and then they are transferred out of that temporary ASG to the original ASG. Finally, the original EC2 instances and the, now empty, temporary ASG are terminated. For a certain amount of time, traffic will be flowing to both the new and the old instances.
+
+	Blue/Green with Elastic Beanstalk requires that your production database (or other persistent stores) are *outside* of the Elastic Beanstalk environment (because environments are terminated with loss of all their resources).
+
+
+	Blue/Green Deployment is a Deployment option whereas immutable update is an Deployment policy. In blue/green deployment you keep two separate environments and just swap CNAMEs of them in case of a new deployment. In immutable update deployment policy you are working with a single environment. You are simply creating a new auto-scaling group side by side with the new code in the same environment. There are scenarios where you will choose one of these. You can’t perform configuration update and application version update simultaneously with immutable policy. You will go with blue green approach here.
+
+
+
+
+
+
+
+
+	Blue -> Old version Application
+	Green -> New Version Application
+
+
+
+
+
+Resources:
+
+1. S3 Bucket
+2. Security Groups
+3. EC2 Instance
+4. ELB
+5. Auto Scaling Groups
+
+
+
+
+Supported Platforms:
+
+	1. Java
+	2. .Net
+	3. PHP
+	4. Node.js
+	5. Python
+	6. Ruby
+	7. Go
+	8. Docker
+
+
+EB Support container environment i.e In Single-Container or Multi-Container, These containers are running on ECS, instead of EC2.
+
+A DataBase(RDS) can be added within or outside the EB environment
+
+	Inside EB ENV:								Outside EB ENV
+
+	|-----------|(ENV)							
+	|	 *(EC2)	|								
+	|	 *(RDS)	|								Same as beside picture, but RDS will be outside the environment
+	|           |
+	| ENV		|
+	|-----------|
+
+
+
+
+EB Commands:
+
+	References:
+		1. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-getting-started.html
+
+	1. open
+
+		This will open the project access stuff in browser.
+
+	2. init
+
+		Command: eb init
+		Description: this will create an application.
+
+		a). It will ask for region to select.
+		b). Select an application to use. (Use exisiting EB applications or create new application).
+		.... and some options
+
+
+	3. create
+
+		command: eb create <options>
+		description: This command will create elastic bean stalk environment
+		example:
+
+				eb create --single
+
+					Above command will create the EB environemnt of type single-instance(Not LB type).
+
+					and it will prompt following options:
+
+						1. name of the environment
+
+	4. status
+
+		command: eb status
+
+		This command will display the status of environment.
+
+			Status like name, health (Upgrade,success,Failed..)
+
+	5. logs
+
+		command: eb logs
+
+		This command will display the logs.
+
+
+	6. Deploy
+
+		command: eb deploy <environment-name>
+
+		This command will deploy the application i.e Once the EB environment is created using "eb create", to deploy the application with new changes, we use this command.
+
+		This is like a deploying the new version application to the same environment. (Mention the environment name to which new version application need to get deployed)
+
+		Suppose if we have 2 environments, env-1, env-2. By default ebcli pointing to env-1, and we want to redeploy to env-2, then "eb deploy env-2"
+
+
+
+	7. Abort the update
+
+		command: eb abort
+
+		Description: Using this command, while upgrading the application to new version, if we want to abort the upgrade, then we can use this command.
+
+
+	8. Clone the Environment
+
+		command: eb clone
+
+		Description: This command will clone (Create a new environment with same config), the environment.
+
+		a). This will ask for new name for environment.
+		b). CNAME change
+
+
+	9. Swap the CNAME(URL) from one environment to another
+
+		command: eb swap <src-env> --destination_name <dst-env>
+
+		Description: This will swap the url from src-env to dst-env and vice-versa.
+
+		Swapping the url's will modify the Route 53 DNS configuration, which may take few minutes.
+
+
+	10. Terminate the environment
+
+		command: eb terminate <environment-name>
+
+		Description: This will delete the environment
+
+
+
+
+Url is the hostname of ELB is wrapped by EB DNS name
+
+
+
+Canary Testing (Means Traffic splitting)
+
+	W'll create another ASG(temporary) and send a part of traffic to it
+
+
+
+We can deploy application in 2 ways:
+
+	1. Normal Way
+	2. Dockerised way
+
+	Normal way mention the steps for starting the application in config files.
+
+	In dockerised way.. it will check for Dockerfile and it will automatically build the docker image and start the docker container having the application.
+
+	Dockerrun.aws.json
+
+	Is similar to a ECS task Definition files an defines multi container configuration.
+
+
+	Example:
+
+		{
+			"AWSEBDockerrunVersion": "1",
+			"Image": {
+				"Name": <Registry-image>
+			},
+			"Ports": [
+				{
+					"ContainerPort": 8080,
+					"HostPort": 8080
+				}
+			]
+		}
+
+		AWSEBDockerrunVersion is set to 1, for single container, set to 2 for multi container
+
+
+
+
+
+We have to commit the changes because the deployment command eb deploy works off the latest commit, and will thus only be aware of our file changes after we commit them to git. (Do note though that we don’t have to push; we are working from our local copy…)
+
+
+
+
+
+AWS BeanStalk Provides:
+
+	1. Route 53
+	2. ELB
+	3. ASG (Auto Scaling Group)
+	4. EC2
+	5. Security Groups
+	6. RDS
+	7. S3 storage (logs, AppFiles)
+	8. Cloud Watch
+
+
+AWS EBS cli installtion...
+
+	1. Install cli on local or personal machine. (pip install awsebcli)
+
+	But Question is, how this ebs-cli is pointing to AWS EBS or how ebs-cli is having creds of AWS EBS ?
+
+
+		So we have to create an account in AWS EBS and configure that account to this ebs-cli.
+
+		We need two keys:
+			1. Access key Id
+			2. Seceret Access key
+
+		To Create any account(Profile), GoTo "IAM", and create a account(Profile).
+
+			IAM -> USERS -> Create New User
+
+				Above steps will generate the "Access key Id" and "Secret Access Key"
+
+			Use these access keys to configure the cli. (Like setting the profile to CLI, so any actions we do from cli will use this profile)
+
+			A named profile is a collection of settings and credentials that you can apply to a AWS CLI command
+
+
+		Okay.... , We just created an account.. but what are all permissions it is having ?, we just created, but how it is having the EB access permission or access rights ?
+
+		So we create a group and add this user(profile) to the group.
+
+
+		When we do "eb init" (or any eb operation), if cli is not having any profile, it will automatically ask for access key Id and secret access key.
+
+		Reference:
+			Read the IAM page I wrote.
+
+
+
+EBS Uses CloudFormation
+
+
+Configuration Files:
+
+	Elastic Beanstalk defines a large number of configuration options that you can use to configure your environment's behavior and the resources that it contains. Configuration options are organized into namespaces like aws:autoscaling:asg, which defines options for an environment's Auto Scaling group.
+
+
+	The idea behind this is to have all the EB configuration to be in programmatically, this way when we handle the project to another person.. he don't have to do any manual stuff.. as project is having it's all configuration files and when we deploy the project, all the configuration's will be automatically applied.
+
+
+	.ebextensions => hidden folder called at the root of the project, which contains the config files
+
+	.config => extension of the config files, which need to be stored in ebextensions
+
+		1. This .config files will have configuration related to,
+
+			a. How to start the application
+			b. What type of application i.e nodejs, Package version like node Version.
+			c. We can specify the environment variables for application like environment type (Test,Production,..) , Ports using.
+			d. Deployment type like we can specify the deployment strategy.
+			e. What are all packages and their versions needed on the platform.
+			f. These .config files allow you to install packages, run arbitrary commands and/or set environment variables.
+
+				example:
+					// file .ebextensions/fileoneconfig.config
+
+					option_settings:
+						aws:elasticbeanstalk:application:environment:
+							PORT: 8080
+							NODE_ENV: production
+
+
+
+
+	Configuration files can config....
+
+		1. Option Setting
+			a. Like setting the initial environment.
+				like setting environemnt variables to the EC2 Instances
+
+		2. Linux/Windows Server configuration
+			a. Doing specific things to linux/windows.
+
+		3. Custom Resources
+			a. if we want to include any external services
+
+
+		The option_settings section of a configuration file defines values for configuration options. Configuration options let you configure your Elastic Beanstalk environment, the AWS resources in it, and the software that runs your application. Configuration files are only one of several ways to set configuration options.
+
+		The Resources section lets you further customize the resources in your application's environment, and define additional AWS resources beyond the functionality provided by configuration options. You can add and configure any resources supported by AWS CloudFormation, which Elastic Beanstalk uses to create environments.
+		
+
+		The other sections of a configuration file (packages, sources, files, users, groups, commands, container_commands, and services) let you configure the EC2 instances that are launched in your environment. Whenever a server is launched in your environment, Elastic Beanstalk runs the operations defined in these sections to prepare the operating system and storage system for your application.
+
+			References:
+				1. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html
+
+
+
+	We can create as many config files as we can, so that every config will have a seperate file.
+
+Environmental files:
+
+	env.yml => Stored at root of project
+
+
+EBS supports rollback, i.e we have full control on life cycle of environements.
+
+Uses S3 bucket for storing application data.
+
+EBS Uses CloudFormation
+
+
+Docker EBS:
+
+	Dockerrun.aws.json
+
+		Where we define our docker image which is already built, ports, volume, logging, etc...
+
+		This file will generate ECS Tasks Definition
+
+
+
+Server Configuration:
+
+	Linux Server Configuration:
+		Download and install prepackaged applications and components
+		Create Linux/Unix Groups and assign group ID's
+		Create Users
+		Execute command
+		create files
+		Which services need to be started or stopped when an instance is launched
+		Container Commands
+
+
+	example:
+		packages:
+			yum:
+				libmemcached: []
+				ruby-devel: []
+
+
+		groups:
+			groupAdmin: {}
+			groupDev:
+				gid: "12"
+
+
+		users:
+			ganesh:
+				groups:
+					- groupAdmin
+				uid: 87
+				homeDir: "/ganesh"
+
+
+		packages:
+		  yum:
+		    git: []
+		    postgresql93-devel: []
+
+
+
+
+
+
+Examples of config files for ElasticBeanStalk:
+
+	example-1:
+
+		Below config will set the deployment type to Immutable
+
+		option_settings:
+			aws:elasticbeanstalk:command:
+				DeploymentPolicy: Immutable
+				HealthCheckSuccessThreashold: Warning
+				IgnoreHealthCheck: true
+				Timeout: "600"
+
+
+
+References:
+1. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts.html
+2. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts-webserver.html
+3. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/concepts-worker.html
+4. https://www.pluralsight.com/guides/aws-deployment-strategies
+5. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/ebextensions-optionsettings.html
+6. https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+7. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/customize-containers-ec2.html
+8. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html
+

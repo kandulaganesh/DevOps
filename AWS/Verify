@@ -1,0 +1,1 @@
+1. It is told that AWS Services are region services.. i.e EC2 is a region service.. if we create the service in north-east , we can't see or access the service in another region

@@ -1,0 +1,201 @@
+Fully Managed Container orchestration service.
+
+1. AutoScalingGrp
+2. ECS Cluster
+3. EC2 Contaners (EC2 Instances that have docker daemon and runs the docker container's) (EC2 Containers is nothing but EC2 Instances)
+
+
+
+Cluster:
+
+1. Multiple EC2 Instances Which will house the docker containers.
+
+ECS Cluster is nothing but the Grouping of the EC2 Instances (EC2 Instances).
+
+
+Once your Tasks are defined, ECS Services detail the auto-scaling nature of the Tasks. If a Task is stopped, the corresponding ECS Service can restart the Task or launch a new instance to replace it.
+
+ECS has two launch types that can define how the compute resources will be managed. The traditional EC2 launch type detailed in the overview above utilizes your own EC2 instances. Fargate removes the responsibility of provisioning, configuring and managing the EC2 instances by allowing AWS to manage the EC2 instances.
+
+
+
+
+When we want to choose a cluster, we have 2 options:
+
+	1. Fargate
+	2. ECS
+
+
+Things Available or needed to setup the ECS Cluster:
+
+1. Use Spot or On Demand
+2. EC2 Instance Type
+3. Number of Instances
+4. EBS Storage Volume
+5. EC2 can be Amazon Linux 2 or Amazon Linux 1
+6. Choose VPC
+7. Assign IAM role
+8. TurnOn the CloudWatch
+9. Can Choose key-pair (Not needed , not recommended)
+
+
+
+ECS agent runs as a docker container... which will take care of reporting Instance status to the cluster
+
+When ever we create a ECS Cluster, it will automatically create a ASG (Auto scaling group) and ASG will manage the EC2 instances.
+
+In the UserData of every instance of ECS Cluster, we mention to which cluster they belong to, this is how it will be:
+
+	echo "ECS_CLUSTER=<cluster-name>" >> /etc/ecs/ecs.config
+
+	This is how agent knows the cluster-name
+
+ECS Task Definition:
+
+	1. These are like a meta-data, But they don't create and manage the container's, these are Just a spec
+
+
+ECS Task is nothing but a group of container specs.
+
+ECS Service will define How many tasks should run and how they should run
+
+	1. How many tasks
+	2. How we want to run (Replica or Daemonset)
+	3. Supports Deployment (Rolling or Blue-Green)
+
+
+
+Components:
+
+1. ECS Cluster
+2. Task Defintion (A Json file that defines the configuraton of (up to 10) containers you want to run)
+3. Task (Launches containers defined in Task Definition)
+4. Service: Ensures tasks remain running, ensure desired number of tasks are running.
+5. Container Agent
+	A binary which runs on every EC2 instance which monitors, starts,stop the tasks (Runs as a docker container)
+
+Also we can link ECS Service to a ALB/ELB
+
+Application Load Balancer supports dynamic host port mapping, unlike classic LoadBalancer which supports only static host port
+
+Every ECS agent will have a role to communicate with the cluster.
+
+The Amazon ECS container agent allows container instances to connect to your cluster. The Amazon ECS container agent is included in the Amazon ECS-optimized AMIs
+
+
+ECS Creates the EC2 instances by AutoScaling Groups.
+
+
+Attaching LoadBalancer to the ECS.
+
+
+ECS Task Placement we can do this only for ECS with EC2, not for the fargate
+
+
+Platforms that provide Docker environment:
+
+	1. ECS
+	2. EKS
+	3. Fargate (Serverless service)
+
+Every ECS node have an agent knows as ECS Agent.
+
+ECS agent register with the Cluster.
+
+EC2 in ECS have a special AMI.
+
+ECS also will be in VPC.
+
+
+EC2 Instance profile:
+
+	1. Attached at EC2 instance level
+	2. Used by ECS Agent for making calls to 
+		a. ECS Service
+		b. Send logs to CloudWatch logs
+		c. Pull Docker image from HUB
+
+ECS Tasks Role:
+
+	1. Attached to Tasks
+
+
+ECS Instance Role: (ecsTaskExecutionRole)
+
+	1. This is the EC2 Instance profile, where we attach to EC2 instance and ECS will use for making request to ECR, CloudWatch, ECS.
+
+
+Task Placement Strategy:
+	1. This will tell where to place the new containers on cluster i.e placement strategies, placement constraints
+	This is only for ECS With EC2, not for fargate
+
+	First ECS will check for memory, cpu and available ports.
+
+	Strategies are:
+		1. Binpack
+				Schedule on EC2 where least availabe amount of CPU or memory
+		2. Random
+				It will place Tasks randomly, no criteria's
+		3. Spread
+				Spread ECS Tasks based on the Id's
+				like: AZ's
+
+	Constraints:
+
+		1. distinctinstance: Place each task in a different container instance
+			We will never have tasks on same instances
+		2. memberOf: Place tasks on instances that satisfy an expression
+			uses Cluster Query Language.
+
+			example:
+			"placementConstraints": [
+				{
+					type: "memberOf",
+					expression: "attribute:ecs.instance-type =~ t2.*"
+				}
+			]
+
+
+
+AWS Cloudwatch track the cpuu, emmory disk usage at the Service level.
+
+Cluster Capacity Provider:
+
+	Helps in scaling the EC2 instances in ECS automatically
+
+
+ECS Volumes:
+
+	1. EBS Volume
+		a. EBS Volumes are mounted to EC2 instances (Only one at a time), so if task got rescheduled to another instance, all data will be lost
+	2. Bind Mounts
+		a. Creating a shared volume on host and making all instances to share it
+	3. EFS
+		a. Shared across all instances, i.e all tasks can share it.
+
+
+Security Groups act at Instance level not the Task level.
+
+Service auto scaling will only scale the tasks, not the cluster
+
+So to scale the cluster (i.e EC2 instances), we have to Capacity Providers.
+
+Security groups do not matter when an instance registers with the ECS service
+
+ECS Uses CloudFormation for launching services.
+
+ECS IAM:
+
+	1. ECS Tasks can have a IAM role for accessing the other services.
+
+We assign IAM Instance Profile to EC2 Instances so that ECS Agent can use it for pulling images, Publishing logs to CloudWatch, Status to Cluster.
+
+
+We assign IAM Roles, Volume Mounts,... at the task level.
+
+References:
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ECS_agent.html
+https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ContainerDefinition.html
+https://docs.aws.amazon.com/batch/latest/userguide/instance_IAM_role.html
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html
+

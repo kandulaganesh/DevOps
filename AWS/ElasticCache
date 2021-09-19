@@ -1,0 +1,84 @@
+ElastCache is to get managed Redis or Memcached.
+
+Cache's are in-memory databases... with really high performance and low latency.
+
+Helps reduce loadoff of database for read intensive workloads.
+
+It helps in creating state-less applications, by caching at common place..
+
+Write scaling using shards... and read scaling using read replicas.
+
+Multi-AZ for failover
+
+
+Applcation <-- search in cache --> Cache --- Cache Miss, so get the Data from DB and store in Cache(Application only has to write to cache) ---> DB
+
+Everything application only has to take care.. i.e it only has to check data in cache.. f it's not there then get data from DB and put that in cache and return data to client
+
+Relieve the load on Database
+
+
+Another Usecase is:
+
+	1. Session Storage
+
+			In ASG... we can store session on cache and let Instances determine whether the user is logined previously.. based on info in cache
+
+
+
+Redis:
+	1. Multi AZ with auto failover
+	2. Read Replicas to scale Reads and high availability
+	3. Data Durability using AOF persistence
+	4. Backup and restore features
+	5. Redis Cluster is an active-passive cluster implementation that consists of master and slave nodes. 
+
+MemCached:
+	1. Multi Node for partitioning of data.
+	2. Non persistent
+	3. No backup and restore
+	4. Multi-thread architecture
+
+What strategies to implement for populating and maintaining your cache depend upon what data you cache and the access patterns to that data
+
+Cache Strateges:
+	1. Lazy Loading
+	2. Write-Through
+	3. Adding TTL
+
+
+Lazy Loading
+	As the name implies, lazy loading is a caching strategy that loads data into the cache only when necessary. It works as described following.
+	Whenever any reads happens, if cache misses, the application read data from DB and update to Cache. 
+
+	Lazy Loading will happen for reads only.. i.e when a read request happens, then only it will update cache if cache miss happens
+
+
+Wrte-Through
+
+	The write-through strategy adds data or updates data in the cache whenever data is written to the database.
+
+Adding TTL
+
+	Add TTL to data in cache.. this way after sometime stale data will get expired
+
+
+To increase performance, we can combine above strategies.
+
+What is cache warmup?
+Cache warming is when websites artificially fill the cache so that real visitors will always get a cache hit. Essentially, sites that engage in cache warming are preparing the cache for visitors (hence the term “warming” as in the warm engine of a car), rather than allowing the first visitor to get a cache miss.
+
+A cold cache is one that does not have any files stored in it, and a warm cache has files stored already and is prepared to serve visitors.
+
+
+cache warming and how does it benefit websites? Cache warming is when websites artificially fill the cache so that real visitors will always get a cache hit. Essentially, sites that engage in cache warming are preparing the cache for visitors (hence the term “warming” as in the warm engine of a car), rather than allowing the first visitor to get a cache miss. This ensures every visitor has the same experience.
+
+
+
+Memcached or redis are key-value database, where value can be naything like photos, html, name, userstatus...
+
+
+
+References:
+
+	1. https://docs.aws.amazon.com/AmazonElastiCache/latest/mem-ug/Strategies.html#Strategies.LazyLoading

@@ -1,0 +1,17 @@
+1. Route-53
+2. ELB
+3. ASG
+4. EC2 Instances
+5. Security Groups (Every instance will have)
+6. ERD
+7. Availability Zone (AZ)
+8. TargetGroups
+9. Elastic Cache
+
+
+
+
+What is AWS:
+
+It is a cloud provider.. which provides services, that can be scaled easily on demand.
+

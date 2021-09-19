@@ -1,0 +1,46 @@
+
+Your VPC has an implicit router, and you use route tables to control where network traffic is directed.
+
+A route table contains a set of rules, called routes, that are used to determine where network traffic from your subnet or gateway is directed.
+
+
+Your VPC has an implicit router, and you use route tables to control where network traffic is directed. Each subnet in your VPC must be associated with a route table, which controls the routing for the subnet (subnet route table). You can explicitly associate a subnet with a particular route table. Otherwise, the subnet is implicitly associated with the main route table. A subnet can only be associated with one route table at a time, but you can associate multiple subnets with the same subnet route table.
+
+If your route table has multiple routes, we use the most specific route that matches the traffic (longest prefix match) to determine how to route the traffic.
+
+Local route: Keep target as "local" if communication is within the VPC.
+
+You can optionally associate a route table with an internet gateway or a virtual private gateway (gateway route table). This enables you to specify routing rules for inbound traffic that enters your VPC through the gateway.
+
+
+Every route table contains a local route for communication within the VPC. This route is added by default to all route tables. If your VPC has more than one IPv4 CIDR block, your route tables contain a local route for each IPv4 CIDR block.
+
+
+VPC will have by default a main route table.
+
+Edge association:
+
+	A route table that you use to route inbound VPC traffic to an appliance. You associate a route table with the internet gateway or virtual private gateway, and specify the network interface of your appliance as the target for VPC traffic.
+
+
+Appliance <--> Route Table <--> IGW/VirtualPrivateGateWay
+
+
+Point:
+
+	A subnet can only be associated with one route table at a time, but you can associate multiple subnets with the same subnet route table.
+
+
+If we want to access the all the services inside the VPC, then the target is "local".
+
+
+Virtual Private Gateway:
+
+	An end point of VPC.
+
+
+We can associate multiple subnets to a route table, but we can't associate same subnet to multiple route tables
+
+
+References:
+	1. https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Route_Tables.html

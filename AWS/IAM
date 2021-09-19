@@ -1,0 +1,189 @@
+A service role is an AWS Identity and Access Management (IAM) role that allows AWS CloudFormation to make calls to resources in a stack on your behalf. You can specify an IAM role that allows AWS CloudFormation to create, update, or delete your stack resources. By default, AWS CloudFormation uses a temporary session that it generates from your user credentials for stack operations. If you specify a service role, AWS CloudFormation uses that role's credentials.
+
+
+IAM have users and groups, groups contain only user's not other groups.
+
+Since IAM is a global service, every user we create in IAM can be used in any region.
+
+We create a IAM user and add this new user to the group, once user is part of group, user will get all permissions that group is having. Suppose but this user needs extra permission, along with the permissions that group is providing, this is also possible, Although the user is part of group, still he can have other policies, only he can have it. (like adding this specific policy to this particulat user apat from the group)
+
+
+To manage and monitor your environment, AWS Elastic Beanstalk performs actions on the environment's resources on your behalf. Elastic Beanstalk needs certain permissions to perform these actions, and it assumes AWS Identity and Access Management (IAM) service roles to get these permissions.
+
+Elastic Beanstalk needs to use temporary security credentials whenever it assumes a service role. To get these credentials, Elastic Beanstalk sends a request to AWS Security Token Service (AWS STS) on a region-specific endpoint.
+
+
+
+A named profile is a collection of settings and credentials that you can apply to a AWS CLI command. When you specify a profile to run a command, the settings and credentials are used to run that command. You can specify one profile that is the "default", and is used when no profile is explicitly referenced. Other profiles have names that you can specify as a parameter on the command line for individual commands. Alternatively, you can specify a profile in an environment variable (AWS_PROFILE) which essentially overrides the default profile for commands that run in that session.
+
+
+Access keys are long-term credentials for an IAM user or the AWS account root user. You can use access keys to sign programmatic requests to the AWS CLI or AWS API (directly or using the AWS SDK).
+
+Access keys are stord in one of the locations on a client that needs to make authenticated API calls to AWS services:
+
+Linux: ~/.aws/credentials
+Windows: %UserProfle%\.aws\credentials
+In this scenario the application server is running on-premises. Therefore, you cannot assign an IAM role (which would be the preferable solution for Amazon EC2 instances). In this case it is therefore better to use access keys.
+
+If we want to choose a particular profile.. use following command
+
+	aws s3 <command u want to run> --profile <profile-name>
+
+
+Instead of going to file and manually writing the access keys.. we can use following command:
+
+	$ aws configure
+	AWS Access Key ID [None]: accesskey
+	AWS Secret Access Key [None]: secretkey
+	Default region name [None]: us-west-2
+	Default output format [None]:
+
+
+
+What!!! So much confused... What is the difference between user.. role.. policy
+
+	User is we use these credentials to login via cli or console..(through password or access keys)
+	Users are individual accounts with usernames & passwords; and Access Key ID's and Access Keys
+	Role is , 
+		IAM roles are a secure way to grant permissions to entities that you trust
+		Used to delegate access to AWS Resources
+		Can be assigned to an AWS Resource (ie EC2 instance) or third party accounts (ie. another AWS account or SAML 2.0)
+
+In IAM,
+
+	Used to create an account (profile) and give to necessary permissions(groups).
+
+	Two terms in IAM:
+
+		1. profile
+		2. groups
+
+	Profile is like a account or user .. Just a account without any permissions.
+
+	Groups is like a role, when we create a group, it will ask for what are all permissions to be given for this group.
+
+	Once the Group and profile are created, edit the Groups and add the users(profile) to the group.
+
+	Groups are like a way to attach policies to multiple users at one time.
+
+
+Manage Access to users and resources.
+
+IAM Users
+IAM Groups
+IAM Roles
+IAM Policies
+
+Users:
+
+	like a individual person or user have few access to use resources
+
+Groups:
+
+	like devops, admins, developer, maintainer..
+
+	Users will inherit the permisions of group.
+
+Roles:
+	
+	Internal usage within AWS resources
+
+	Roles is what we give to machines.
+
+
+i.e users is for a physical human's, Roles are for physical machines.
+
+Policies are Json Doc's.. they define what each of above can and can't do.
+
+Since IAM is Global.. any user, group or role is not limited to any region, it has global view.
+
+Can have MFA for root account and for users.
+
+
+IAM Access keys allows users to interact with AWS service programitically via AWS Cli and SDK
+
+
+We can create temporary security credentials which will last from minutes to hour.
+
+WebIdentity.
+
+cross-account access:
+
+Suppose, we want to give a service access to a user, usually we create a user with proper permissions, but instead of creating a user everytime.. we use cross-account access by which, You share resources in one account with users in a different account.
+
+AssumeRole()
+	https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html
+
+How to give access to external service:
+
+	Yes, you can create a role for external service and can use STS for the external service to perform tasks in AWS.
+
+
+An IAM user can belong to multiple groups
+
+
+
+Roles provide more security... as AWS will roll the credentials frequently... i.e Roles we assign to services will be iterating frequently
+
+
+
+How SDK, AWS CLI will work ?
+
+	1. If we are using CLI or SDK... it will automatically sign the HTTP Requests
+
+If we are not using SDK or CLI.. then we have to use our own signature method like Signature V4 (SigV4)
+
+SigV4 means that your requests to AWS are signed using AWS Credentials, so you are authenticated against AWS.
+
+SigV4 Examples:
+
+	We sign the Requests in following ways:
+
+	1. HTTP Header Option:
+
+			Here we sign the request using HTTP Header, header will have signatured content...
+
+	2. Query String Option (Example is: S3 Pre-signed URL)
+
+			Here we have long URL, url will have the signature parameter
+
+
+IAM Federation:
+
+	It uses SAML standard (Active Directory)
+
+Pending:
+
+	1. ECS roles for ECS
+	2. EC2 Instance Roles for EC2 Instances
+	3. lambda Roles for Lambda functions
+
+
+
+IAM Federation:
+
+	1. Useful for Big Enterprises
+	2. This way One can login into AWS using company credentials
+	3. It uses SAML standard
+
+
+EC2 Instance Connect:
+
+	1. Need public-ip address for connecting to instance from browser.
+	2. AWS uses temporary public ssh key for connecting to instance.
+
+
+Access keys are used when we use CLI or AWS SDK
+
+
+Some AWS Services will need to perform actions on your behalf. Todo so we w'll assign permissions to AWS services with IAM Roles
+
+
+
+References:
+	1. https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+	2. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_groups.html
+
+
+
+

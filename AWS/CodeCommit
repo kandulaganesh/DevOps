@@ -1,0 +1,55 @@
+AWS CodeCommit is a fully-managed source control service that hosts secure Git-based repositories. It makes it easy for teams to collaborate on code in a secure and highly scalable ecosystem. CodeCommit eliminates the need to operate your own source control system or worry about scaling its infrastructure. You can use CodeCommit to securely store anything from source code to binaries, and it works seamlessly with your existing Git tools.
+
+
+
+
+We can commit code to "cloud commit" using EBS (eb command)
+
+
+We give permisions to users to commit the code to CodeCommit using IAM Roles amd Policies
+
+Authentication to CodeCommit:
+
+	1. SSH keys
+	2. HTTPS
+	3. MFA
+
+Repository is necrypted automatically at rest using KMS
+
+
+Cross Account Access:
+
+	1. STS
+
+CodeCommit notifications can trigger:
+
+	1. SNS
+	2. Lambda
+	3. Cloudwatch events
+
+
+CodePipeline:
+
+	1. Source can be anything i.e Github, BitBucket,.. (When we commit to github, the CodePipeline will be trigerred)
+	2. Build can be anyone i.e CodeBuild or Jenkins... (i.e the build spec)
+	3. Pass artifacts from one Stage to another using S3
+	4. CodePipeline state changes, CloudWatch Events will be generated
+	5. In a pipeline we can have many stages, and each stage can have more than one action i.e one stage can do code build, same stage can trigger lambda 
+
+Code repository (CodeCommit) and CodePipeline are seperated, i.e We can use any source code for CodePipeline
+
+But for CodeCommit we have to use CodePipeline
+
+CodeStart:
+
+	It is a integrated solution that regroups: GitHub, CodeCommit, CodeDeploy, CodePipeline, CloudWatch, CodeBuild, CloudFormation
+
+	When we create a CodeStart project, it will create
+		1. CodeCommit
+		2. CodeDeploy
+		3. CloudFormation
+		4. Monitoring
+		5. CodePipeline
+		6. S3 Bucket
+		7. ElasticBean Stalk...
+		

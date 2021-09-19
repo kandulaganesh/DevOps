@@ -1,0 +1,83 @@
+aws configure
+
+	This will let us to add profiles (user).
+
+	It will create/edit two files
+
+		1. ~/.aws/credentials
+			It will store credentials i.e aws_access_key_id and aws_secret_access_key
+		2. ~/.aws/config
+			It will store config info like region and output format....
+
+
+For adding other profiles...
+
+	aws configure --profile=mynewprofile
+
+
+	and for using aws s3 ls --profile=mynewprofile
+
+Security Tip:
+
+	1. Don't run "aws configure", on AWS EC2, credentials are personal... have those only on Personal machines.. not on someone's
+
+
+So How to do is, By assigning Roles to the Instan ces is the better way
+
+
+AWS Command:
+
+	aws <resource> <operation> <options>
+
+		resource:
+			s3 i.e aws s3 <....>
+
+		Operation:
+			create a bucket, remove bucket, copy an object,...
+
+			mb i.e aws s3 mb <...>
+
+		Options:
+			name of bucket, or object name to be copied...
+
+			aws s3 mb mynewbucket
+
+			aws s3 cp s3://mynewbucket/image.jpg .
+
+
+
+InLine policies are like a instant policies we attach to the roles... (Specific role) and cannot be attached to all roles.
+
+
+
+--dry-run
+
+Suppose we want to test whether a user/role is having permission to create an EC2 instance... Instead of creating an instance just for testing.. we can use --dry-run option just to simulate whether we have permissions to create EC2 instance.
+
+
+
+AWS CLI STS Decode Errors
+
+	When we run a API Call's, they fail and give a long error message, the error message can be decoded using STS command line
+
+	sts decode-authorization-message
+
+	Example:
+		aws sts decode-authorization-message --encode-message <long string of aplha-numeric>
+
+
+
+We can test the policies by:
+
+	1. Policy simulator
+	2. Dry Run
+
+
+
+We can get Temporary Credentials for an MFA User as well.. by using "STS GetSession Token", this will give access_key_id, secret_access_key_id and session_token
+
+
+By default SDK will use "us-east-1", if we don't specify the region or configure default region.
+
+
+

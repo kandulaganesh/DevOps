@@ -1,0 +1,18 @@
+
+Aside of services, We have multiple features:
+
+	1. Security Groups
+	2. Elastic IP's
+	3. Elastic Virtual Network Interface (ENI)
+		Network Interfaces are AZ's specific. i.e we cannot assign AZ-1's ENI to AZ-2's Instance.
+	4. TargetGroups
+		a. Stickiness (Using cookies)
+		b. This will work for CLB and ALB
+		c. This may bring im-balance of traffic
+
+
+	The advantage of Features is, they are not specific to any instance or service... i.e we can detach and reattach to any service at any time.
+
+
+
+Above features are not limited to EC2 instances.. we can assign to any object.. i.e Security Groups can be assigned to ENI

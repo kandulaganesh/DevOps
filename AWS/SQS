@@ -1,0 +1,224 @@
+A fully managed queuing service that enables you to decouple and scale micro services, distributed systems and server less applications.
+
+Asyncronous communication.
+
+Have to pull, not reactive.
+
+messages get deleted once message is pulled.
+
+Size of message can be in b/w 1byte to 256 KB
+
+Message retention:
+
+	How long a message can stay in the queue, default is 4days, but we can adjust from 60sec to 14days
+
+
+Messages in the queue are typically processed by a single consumer.
+
+
+KMS -> SQS will encript the messages.
+
+Difference B/W and when to use SNS/SQS:
+
+	In SNS, 
+		1. Publishing message to a topic can deliver to many subscribers of different types (Email,lambda,SQS)
+		2. "Do other systems care abt event" => For this scenario SNS is good because we can pass the information to other services as SNS support 		multiple services can be subscribed.
+		3. One of the use case of this is if we want to trigger something automatically...
+		4. If we want to send stuff to many services.. i.e as SNS uses Pub-Sub model where many services can subscribe.
+		5. After couple of retries message may get discarded, incase if subscriber failed to process it.
+
+
+
+	In SQS, 
+		1. Only one consumer can take the message from the queue and process it
+		2. "Does your system care about an event ?"
+				System takes the event from the queue and process it
+		3. If consumer failed to process the message in queue, the message will be in Dead Letter Queue and later we can reach to it to get the 	     message.
+
+
+
+Amazon SQS provides support for dead letter queues. A dead letter queue is a queue that other (source) queues can target for messages that can’t be processed successfully. You can set aside and isolate these messages in the dead letter queue to determine why their processing did not succeed.
+
+Creating a Dead Letter Queue
+	A dead letter queue is created the same way as a regular queue, but it has the following restrictions:
+	A dead letter queue must be the same type of queue (FIFO or standard) as the source queue.
+	A dead letter queue must be created using the same AWS account and region as the source queue.
+
+
+Usecase for Dead Letter Queue:
+
+	There is a scenario.. where some messages are getting strucked in the queue due to errors and the queue size is increasing exponentially.
+	Due to this error messages in the queue.. functonality is getting disturbed.. so this kind of scenario's we can use DeadLetterQueue.
+
+
+SQS Types:
+
+	1. Standard Queue
+		a. Order is not guranteed.
+		b. Messages may be delivered more than once.
+	2. FIFO
+		a. Order is strictly preserved.
+		b. Avoids duplicate message delivery by usng dedup.
+
+
+
+In SQS, one message can't have multiple consumers. Once the message is processed by the consumer, it gets deleted from SQS.
+
+
+
+
+We can integrate the Lambda to the SQS, i.e, SQS can automatically trigger the lambda function. (Zing zing amazing)
+
+
+Visibility TimeOut:
+
+	When a process or consumer is pulled (Took a copy of message) the message from the queue, the message in queue will be invisible till the visibility timeout.
+
+	The idea behind is to prevent other consumers from processing the message again. (Read below)
+
+	When a consumer receives and processes a message from a queue, the message remains in the queue. Amazon SQS doesn't automatically delete the message. Because Amazon SQS is a distributed system, there's no guarantee that the consumer actually receives the message (for example, due to a connectivity issue, or due to an issue in the consumer application). Thus, the consumer must delete the message from the queue after receiving and processing it.
+
+
+	Consumer can increase the Visibility timeout if processing is taking more time.
+
+InFlight Messages:
+
+	Messages "in flight" are not pending delivery, they're messages that have already been delivered but not further acted on by the consumer.
+
+
+	When a consumer receives a message, it has to -- at some point -- either delete the message, or send a request to increase the timeout for that message; otherwise the message becomes visible again after the timeout expires.If a consumer fails to do one of these things, the message automatically becomes visible again
+
+
+It's consumer responsibility to delete the messages from queue.
+
+
+
+AWS Lambda service roll back entire batch if one or more messages fail. messages can be reprocessed.
+
+If we are not using Lamdba services for SQS, but we are using lambda function for processing queues.. lambda function will not rollback whole batch instead it will rollback only the messages that were failed.
+
+
+
+SQS is use full for conversion of syncronous to Asyncronous : High Volume Traffic.
+
+
+Consumer will pull the message from the SQS Queue, if processing the message is success, the consumer will delete the message from the queue, else i.e if consumer failed to process it.. message in the queue will be reappeared(Visibility timeout) and other consumer will process the same message.
+
+But the issue is,
+
+	First consumer already processed it and made some changes to the host or machine, now second consumer took the same message and doing same operations that first consumer has done.. It's developer who has to make sure that second consumer shouldn't break the stuff, as first consumer had made some changes already and which may cause issues to second consumer... so developer has to handle all these scenario's
+
+	i.e Make sure reprocessed messages shouldn't break the system
+
+
+Purpose of the deduplication ID is to help ensure "exactly once" delivery.
+
+
+Useful in converting synchronous architecture to asyncronous architecture.
+
+
+Standard Queue:
+
+	Fully managed service, used for decoupling the service.
+
+	Unlimited Throughput and unlimited number of messages
+
+	Retention period is 4days, and maximum 14Days
+
+	It's consumer responsibilityt o delete the message from queue once it is processed.
+
+	Messgae size < 256KB
+
+	Can have possiblity of duplicate message, But it's consumer application has to take care of
+
+	Can have out of order messages.
+
+	Consumer can receive maximum 10 message at a time
+
+	Can have multiple consumers
+
+SQS Security:
+
+	1. In-flight encryption
+		Enabled by-default
+	2. At rest, KMS
+
+
+Message Invisibility Timeout:
+
+	When a consumer pulled a message, the message will be invisible to other customer's
+
+		Default visibility timeout is 30sec
+
+
+
+DeadLetterQueue:
+
+	When a message is not being able to processed by any customer, then We can keep a threshold like after these many process it should go to DeadLetter Queue
+		Example:
+
+			Suppose the message in queue is corrupted or having some unknown operation, and consumer got broked , after visibility timeout another customer happens same...
+
+	Basically if a consumer receives more than threshold times, then it will automatically move to dead letter queue
+
+
+Delay Queue:
+
+	We can mention that the posted message can be visible to a consumer after certain delay i.e with-in this delay consumer can't see or receive the message
+
+	Default delay is 0 seconds
+
+
+Long Polling:
+
+	In Short polling we are polling queue continously for messages, due to continous polling, it may increase cost, So we have long polling
+
+	In long polling we are saying request to wait at queue for sometime till u get atleast one message.
+
+Extended Client:
+
+	Maximum size limit of a message is 256KB, But if we want to send a huge file, then we can upload that file in S3 and pass metadata of that file in message to queue
+
+
+
+In a poll, maximum it can receive 10 messages.
+
+
+FIFO Queue:
+
+	In standard Queue, order of messages is not guarantee
+
+	But in FIFO, Order is gurantee
+
+
+	Throughput of FIFO is less than Standard message queue
+
+	Exaclty once send capability, i.t no duplicates in the message queue
+
+	* Queue name must end with .fifo
+
+		example: myfifoqueue.fifo
+				 samplequeue.fifo
+
+	Deduplication:
+
+		If we send same message with in the De-duplication interval, the second message will be discarded
+		De-duplication methods:
+
+			1. Content based De-duplication
+				W'll compare SHA-256 hash of a message body
+			2. Deduplication ID
+				criteria is De-duplication ID
+
+
+    Message Grouping:
+
+    	Ordering across groups is not gurantee
+    	A Group can have only one consumer
+
+    	If we want another consumer to receive message, the have different Grouping ID
+
+
+In SQS only one consumer can process message at a time, i.e no broad cast.
+
+

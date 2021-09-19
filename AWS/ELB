@@ -1,0 +1,284 @@
+
+
+ELB will point to targets i.e EC2 Instances... and frequently it will check the health of the targets and route the traffic to targets.
+
+ELB is regional specific.
+
+ELB Distributes incoming application traffic across multiple targets, such as amazon EC2 Instances, containers, IP address and lambda Functions.
+
+Three Types of ELB's:
+
+1. Application LB
+2. Network LB
+	Rules are not available for this LB
+3. Classic LB
+	Rules are Not available for this LB
+	Here Instances are directly attached to the ELB.
+
+
+Three Components are:
+
+1. Listeners
+	List for the incoming traffic, listeners evaluate any traffic that matches the listeners port and listener have rules and rules will decide what to do with the traffic.
+2. Rules
+	1. We can apply rules only on the ALB.
+	2. Rules can be applied on following stuff
+		a. Host Header
+		b. Source IP
+		c. Path
+		d. Http Header
+		e. Http Header method
+		g. Query String
+
+
+3. Target Groups
+	EC2 Instances are registered as targets to a TargetGroup
+	Target Group will evenly distribute traffic
+
+
+ApplicationLoadBalancer:
+
+1. Operates at OSI Layer-7 (Application layer)
+2. Health checks are found on the Target Groups
+3. it supports HTTP,HTTPS and Websocket
+4. ALB with Elastic IP is not technically feasible.
+
+
+ClassicLoadBalancer:
+
+1. Can balance HTTP,HTTPS,TCP
+2. Operates at layer (1 and 7, application and Transport)
+3. Can Perform Cross-Zone Load Balancing
+4. Respond with 504, if application does not respond
+5. Health checks are found on the LoadBalancer it self
+
+NetworkLoadBalancer:
+
+1. It is designed to balance TCP/UDP.
+2. Operates at layer-4(Transport Layer)
+3. Can Handle Millions of Requests
+4. Health checks are found on the Target Groups
+
+
+Sticky Sessions:
+
+	Cookies are used to remember which EC2 Instance.
+
+1. It allows us to bind a user's session to a specific EC2 Instance.
+2. Ensures ll requests from that session are sent to the same instance.
+3. Typically used with Classic load balancer.
+	How it works in CLB is:
+		a. CLB will store the cookies on the instances and next time when request from same user comes, it check which instance is having the cookie 	and redirect traffic to that instance.
+4. Can be used on ALB as well but here cookies are stored at TargetGroups, not on instances.
+
+
+
+XFF(X-FORWARDED-FOR) Header:
+
+	The XFF header is a command method for identifying the originating ip address of a client connecting to a webserver through an HTTP proxy or LoadBalancer.
+
+	At client if we see the originating ip address, it will be the ip address of the LoadBalancer, So to get the ip address of the client we use the XFF.
+
+
+If ELB Health check for an instance fails, it will not terminate the instances, but it will just redirect the traffic to another instance.
+
+
+Cross Zone LoadBalancing:
+
+	1. Abt balancing the load across many AZs i.e Suppose We have instances in 2 AZs i.e AZ1 and AZ2 , if traffic comes Cross Zone Loadbalancing will takecare of balancing traffic equally to both zones i.e 50% and 50%. If we don't have CrossZoneLoadBalancing.. trafffic get distributed unevenly.. i.e 30% and 70%.
+	2. It is available for ALB,CLB and NLB.
+
+
+We can attach WAF(Web Application Firewall) to the ALB but not to the NLB, CLB
+
+ELB will handle the downstream failures by checking the health of downstream stuff.
+
+Classical LoadBalancer:
+
+	1. HTTP,HTTPS (Layer-7),TCP(Layer-4)
+	2. one application, one ELB
+
+Application LoadBalancer:
+
+	1. HTTP,HTTPS, WebSocket (Layer-7)
+	2. It allows us to loadbalance to multiple HTTP applications across machines (target groups)
+	3. Routing based on route(url) to different target groups.
+		a. Routing based on url path.
+		b. hostname, query string...
+		c. Great fit for micro services like container based application..
+	4. Target Groups can be:
+		a. EC2 Instances
+		b. ECS Tasks
+		c. Lambda Functions
+		d. IP address (must be private ip address)
+		e. Can route to multiple target groups
+		f. health checks are done at target groups level.
+
+Client Ip-Address:
+	 Application Servers don't see client ipaddress directly, because clients see ALB's private ip as source address... but true ipaddress is seen in header X-Forwarded-For
+	 We can get port by X-Forwarded-Port
+	 We can get protocol by X-Forwarded-Proto
+
+
+Network LoadBalancer:
+
+	1. TCP, TLS and UDP (Layer-4)
+
+We can setup two types of ELB:
+
+	1. Public ELB
+	2. Private ELB (internal)
+
+
+ELB communicates with downstreams in HTTP Protocol
+
+
+For Security:
+
+	1. Create Security Group
+
+Network Load Balancers expose a public static IP, whereas an Application or Classic Load Balancer exposes a static DNS (URL)
+
+
+Network Load Balancers do not have associated security groups. Therefore, the security groups for your targets must use IP addresses to allow traffic from the load balancer. 
+
+
+Cross Zone Load Balancing:
+
+	1. Application Load Balancer
+		a. Enabled by default and can't be disabled
+	2. Classic LoadBalancer
+		b. Disabled by default
+	3. Network LoadBalancer
+		c. Disabled by default
+
+
+Security:
+
+	SSL/TLS
+
+	Users <-- HTTPS/Secure -> ELB <-- HTTP/Insecure --> Targets (Instances)
+
+	SNI(Server name Indication)
+		SNI solves the problem of loading multiple SSL certificates oneto one webserver
+
+		This is a newer protocol, in which it requires the client to indicate the hostname of the target server in the initial SSL Handshake.
+
+			example: Suppose User want to send request to example.com.. ELB will load corresponding Certificate and return it
+
+		Available only on ALB,NLB and CloudFront
+
+		It doesn't work for CLB, CLB support only one certificate
+
+
+Connection draining...
+
+
+ELB -> TG (Can be many) -> EC2 (ASG will there)
+
+ELB:
+
+	1. Routing to Which Loadbalancer
+
+TG:
+
+	1. Will do health checks
+	2. Distribute traffic
+
+
+This will check health on port and route (/health)
+
+If response is not 200, then instance is unhealthy.
+
+Error 4xx -> Client induced error
+Error 5xx -> Application induced error
+
+503 means at capacity or no registered targets.
+
+
+SNI(Server name indication)
+
+	Works only with ALB, NLB and CloudFront
+
+	Will not work for CLB
+
+CLB, supports only one certificate
+
+ALB and NLB, supports multiple certificates.
+
+Target Groups will be availabe for only ALB and NLB, not CLB
+
+Connection Draining:
+
+	Time to complete In-Flight requests while the instance is de-registering or un-healthy.
+
+	CLB: Connection draining,
+	ALB/NLB: Deregistration delay
+
+	Stops sending new requests, while instance is de-registering or Un-healthy
+	De-registering delay is: 0-3000, default 300
+	Can be disabled (Set to 0)
+
+	
+
+Errors:
+
+	1. 4xx -> Client induced errors
+	2. 5xx -> Application induced errors
+
+	503 -> load balancer error (ELB capacity out. no target found)
+
+
+CLB:
+
+	1. Supports TCP, HTTP and HTTPS
+	2. Health checks: TCP and HTTP
+	3. fixed hostname
+
+
+ALB can balance between EC2, ECS, and lambda, and ipAddress (must be private)
+
+ALB have fixed hostname
+
+
+NLB expose 1 static ip from each AZ, we can also assign elastic ip
+
+
+In ALB, instances sees traffic coming from the ALB
+
+But In NLB, instances sees traffic coming from the external client
+
+ALB and CLB both support the stickness, we achieve this using cookies which has TTL
+
+We enable Stickyness at target group level. But for CLB we enable at LoadBalancer level
+
+
+Cross Zone loadbalancing is always enabled and cannot be disabled for ALB
+
+For NLB. Cross Zone loadbalancing is disabled by default, ans we pay if we enable
+
+For CLB, if we create from console, it is enabled by default, and from SDk/terminal it is disabled by default
+
+
+ALB,NLB and cloudFront supports SNI.
+
+CLB supports only one Certificate
+
+We can scale the instances using ASG with cloudwatch alarms
+
+Cloudwatch alarms can be used as triggering for scaling the instances
+
+
+ALB works on Layer-7, NLB works on Layer-4, and Layer-4 is faster than Layer-7
+
+Application Load Balancer supports dynamic host port mapping. (ECS)
+
+
+TargetGroups:
+
+	1. TargetGroups are the Objects which have information about Instances i.e their ip-address, traffic-port,health check-port,...
+
+	When we register the targetGroups to LoadBalancer, Loadbalancer takes the information and do healthchecks and send traffic
+
+References:
+1. https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/java-se-nginx.html

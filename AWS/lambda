@@ -1,0 +1,238 @@
+Lambda is a server less functions...
+
+	Server less:
+
+		1. Self managed i.e Customer donot have to provision the resources and manage them.
+
+
+
+Q: How long can an AWS Lambda function execute?
+
+AWS Lambda functions can be configured to run up to 15 minutes per execution. You can set the timeout to any value between 1 second and 15 minutes.
+
+Lambda functions.. Code will not be executed forever.... Code will be executed only when it is needed
+
+You can create one or more aliases for your AWS Lambda function. A Lambda alias is like a pointer to a specific Lambda function version. Users can access the function version using the alias ARN.
+
+You can point an alias a multiple versions of your function code and then assign a weighting to direct certain amounts of traffic to each version. This enables a blue/green style of deployment and means it’s easy to roll back to the older version by simply updating the weighting if issues occur with user experience.
+
+
+
+An event source mapping is an AWS Lambda resource that reads from an event source and invokes a Lambda function. You can use event source mappings to process items from a stream or queue in services that don’t invoke Lambda functions directly. Lambda provides event source mappings for the following services.
+
+Services That Lambda Reads Events From
+
+Amazon Kinesis
+Amazon DynamoDB
+Amazon Simple Queue Service
+An event source mapping uses permissions in the function’s execution role to read and manage items in the event source. Permissions, event structure, settings, and polling behavior vary by event source.
+
+The configuration of the event source mapping for stream-based services (DynamoDB, Kinesis), and Amazon SQS, is made on the Lambda side.
+
+Note: for other services, such as Amazon S3 and SNS, the function is invoked asynchronously and the configuration is made on the source (S3/SNS) rather than Lambda.
+
+
+
+AWS Lambda Authorizer ? (Told will help in autherization.....)
+
+
+
+Max of 1000 lambda functions we can run at a time
+
+AWS Lambda now supports up to 10 GB of memory and 6 vCPU cores for Lambda Functions.
+
+We can run containers on lambda only if container image must implement the Lambda Runtime API
+
+Versioning... we can easily roll back.
+
+
+Pay by number of invocations, amount of memory allocated, duration
+
+
+Synchronous Invocation:
+
+	1. CLI
+	2. SDK
+	3. API Gateway
+	4. Application LoadBalancer
+	5. CloudFront
+
+
+	In Synchronous we will be waiting for the result and result will be returned right away.
+
+	These invokation we do...
+
+
+Asynchronous:
+
+	In this case Lambda is invoked by 
+		1. S3
+		2. SNS
+		3. CloudWatch
+		4. CodeCommit, CodePipeline .....
+
+	Lambda service mantains a Event Queue having all events
+
+	In Case of failures, Service will retry for sometime and it will move the event to DLQ(DeadLetterQueue)
+
+
+SQS, SQS FIFO, Kinesis DataStreams, DynamoDB
+
+	For above services, lambda will continously poll for the event and function will be invoked synchronously
+
+	Also Lambda will delete the message from the queue
+
+
+ALB Invokes lambda Function:
+
+	1. ALB Transforms HTTP request to Json format and vice-versa
+
+
+	ALB Multi Header Values:
+
+		Got a HTTP Response having same multiple queryString parameters like /api?name=Ganesh&name=Dinesh , 
+				this will be converted to stringParameters: {name: ["Ganesh","Dinesh"]}
+
+	Client <-- HTTP Request --> ALB <-------> TargetGroup  <--------> Lambda 
+
+								<---- ALB Converts HTTP Request to JSON --->
+
+
+
+
+Lambda@Edge
+
+	Adds security.......
+
+Access Policy:
+	Resource Policy:
+		1. Lambda's Resource policy will give access to other service to trigger lambda function.
+
+	IAM Roles:
+		1. If lambda wants to access any services, then we have to assign IAM Role
+
+
+
+Event Source Mapping:
+
+	It applies following services:
+
+		1. SQS and SQS FIFO
+		2. DynamoDB Streams
+		3. Kinesis Data Streams
+
+	Lambda maintains EventSourceMapping, which will have all events
+
+	Common of above all are, from above all records need to be pulled from source
+
+	In this case, lambda will be invoked synchronously
+
+
+Destinations in lambda:
+
+	In Synchronous, lambda functions return response i.e success or failure
+
+	In Asynchronous or event mapper, to have the responce, once after the function is done, we can send the output to SQS/SNS/LambdaFunction/EventBridge
+
+
+Environment Variables in Lambda:
+
+	1. We can pass environment variables to lambda functions to make it generic and re-usable
+	2. We can use KMS for encrypting the env variables
+	3. Secerts can be encrypted using Lambda service key or CMK
+
+VPC:
+
+	1. Creating Lambda function in Public Subnet will not assign a public ip to it unlike EC2 when we got deployed in PublicSubnet, they get public IP
+
+Even if we deploy lambda in VPC in a private subnet, still lambda able to send logs to CloudWatch, no matter what where lambda is present.
+
+Behind the scenes, lambda will create ENI (Elastic network interface) in the subnets
+
+
+We cannot set vcpu directly.. with increase in memory, vcpu also increases parallely i.e the more RAM we add, the more vcpu cores will be credited
+
+At 1792MB, we will get full 1VCPU credit.
+
+Default timeout of lambda function is 3seconds, max is 900seconds (15min)
+
+
+Execution Context:
+
+	The execution context is a temporary runtime environment, that initilizes any external dependencies of the lambda code.
+
+	The execution runtime will be maintained for sometime in anticipation of another lambda function invocation.
+
+	The execution context includes /tmp directory.
+
+
+Lambda Concurrency:
+
+	At max we can trigger 1000 lambda function's, we don't want to a single function consuming all lambda's, so it avoid that we can have a throttle like max of 10 lambda instances can be triggered
+
+	Reserved Concurency:
+		Like this function can have max of 10 lambda instances.
+
+Cold Start:
+	
+	Sometimes lambda takes time for starting like DB connections, or setting up the environment, so to avoid that we can have provisioned lambda instances
+
+	Provisioned Concurrency:
+
+		We provision few lambda instances to avoid cold start.
+
+
+Layers:
+
+	Used to customize the execution environment
+
+	Instaed of using a particular dependency in every application, we can seperate it and create a layer and use it in multiple appliactions
+
+	We are packaging our application dependencies and layers and we can re-use them across the lambda functions.
+
+Lambda Does support container images
+
+	So we will be deploying lambda function as a docker container.
+
+	But we need to use base-image as aws lambda run-time docker image
+
+	So not all docker images, only the images that have base-image as lambda runtime API
+
+	
+Lambda Version's are immutable.
+When we are ready to publish our code, then we can create a Version
+
+
+Aliases are "pointers" to lambda function versions.
+
+Aliases are mutable.
+
+Aliases are used for deployment strategies like blue/green deployment.
+
+Aliases cannot refer other aliases.
+
+$LATEST version is the unpublished version, and only mutable version.
+
+Limits:
+
+	Memory:
+		128MB - 10GB
+		With increase in memory, vcpu cores also increases
+
+	Maximum execution time: 15min
+
+	Environment variables: max of 4KB
+
+	1000 concurrent executions
+
+	Lambda Deployment size: 50MB (.zip file)
+
+	Uncompressed file: 250MB
+
+	
+
+
+
+References:
+1. **** https://aws.amazon.com/lambda/faqs/
+2. https://aws.amazon.com/blogs/architecture/understanding-the-different-ways-to-invoke-lambda-functions/

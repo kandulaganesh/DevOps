@@ -1,0 +1,7 @@
+ENI: Elastic Network Interface
+
+If any device wants an interface, then it will create from this.
+
+	example:
+		1. EC2
+		2. Lambda
