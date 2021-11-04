@@ -1,0 +1,35 @@
+Standard Input streams:
+
+
+2 -> stderr
+1 -> stdout
+0 -> stdin
+
+References:
+	https://stackoverflow.com/questions/818255/in-the-shell-what-does-21-mean
+
+Example or usecase:
+
+int exec(const char* cmd, string& result)
+{
+   std::array<char, 256> buffer;
+   FILE *stream;
+
+   printf("executing helm command = %s", cmd);
+   stream = popen(cmd, "r");
+  
+     if (!stream) {
+       return  EXIT_FAILURE;
+     }
+  
+     if (stream) {
+       while(!feof(stream)) {
+         if(fgets(buffer.data(), 256, stream) != nullptr) {
+            result += buffer.data();
+          }
+        }
+      }
+  
+    int ret = pclose(stream);
+    return ret;
+} 
