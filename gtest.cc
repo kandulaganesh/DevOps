@@ -3,6 +3,9 @@
 /*
     How to compile:
        g++ -Wall -g gtest.cc -lgtest_main  -lgtest -o gtest
+       
+     References:
+       https://www.youtube.com/watch?v=16FI1-d2P4E&t=665s
 */
 
 
