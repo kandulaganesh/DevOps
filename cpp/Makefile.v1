@@ -1,0 +1,50 @@
+
+# Compiler
+CC = g++
+
+# Flags
+FLAGS = -g -Wall -std=c++11
+
+#Libraries
+LIB = -pthread
+
+#Header files
+INCLUDE = -L.
+
+.PHONY: all
+all: Consumer.o Producer.o multi_thread.o
+	$(CC) $(FLAGS) Consumer.o Producer.o multi_thread.o -o mybin $(LIB)
+
+Consumer.o: Consumer.cc
+	$(CC) -c Consumer.cc $(FLAGS) $(LIB) $(INCLUDE)
+
+Producer.o: Producer.cc
+	$(CC) -c Producer.cc $(FLAGS) $(LIB) $(INCLUDE)
+
+multi_thread.o: multi_thread.cc
+	$(CC) -c multi_thread.cc $(FLAGS) $(LIB) $(INCLUDE)
+
+.PHONY: clean
+clean:
+	rm -f *.o mybin bin/*
+
+.PHONY: test
+test: mybin
+	timeout 5 ./mybin || true
+
+mybin: all
+
+.PHONY: install
+install: mybin
+	@if [ -d bin ]; \
+	 then \
+	 mv mybin bin/.; \
+	else \
+	 echo "bin directory not found"; \
+	 exit 1; \
+	fi
+
+# How to Compile the code
+help:
+	@echo -e "use \"make\" comamnd to generate binary. \nuse \"make clean\" to delete object and binaries.\nuse \"make test\" to test the binary."
+
