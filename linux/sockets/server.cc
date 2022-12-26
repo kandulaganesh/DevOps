@@ -1,5 +1,7 @@
-// Server side C/C++ program to demonstrate Socket
-// programming
+// Server side C/C++ program to demonstrate Socket programming
+
+// Compile: g++ server.cc -o server
+
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>

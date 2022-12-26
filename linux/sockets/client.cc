@@ -1,5 +1,7 @@
-// Client side C/C++ program to demonstrate Socket
-// programming
+// Client side C/C++ program to demonstrate Socket programming
+
+// Compile: g++ client.cc -o client
+
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
