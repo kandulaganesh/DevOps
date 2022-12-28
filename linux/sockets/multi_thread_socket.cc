@@ -3,7 +3,7 @@
 
 /* Hello, Welcome to Socket Programming.
  *
- * In this example, We to write server code to accept multiple client connections at a time.
+ * In this example, We will write server code to accept multiple client connections at a time.
  *
  * For Every new connection, Server creates new dedicated thread to service the request, 
  * and main thread will be used to accept new connections.
