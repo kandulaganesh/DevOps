@@ -1,6 +1,9 @@
 https://gist.github.com/kandulaganesh/c4fcf3504a60e3f59d48915b36bcf938
 https://gist.github.com/kandulaganesh/9e444d67d7d46f6d942be39ac46e84b7
 
+Image Reference:
+    https://stuffphilwrites.com/wp-content/uploads/2014/09/FW-IDS-iptables-Flowchart-v2019-04-30-1.png
+
 Examples:
 
 Consider a scenario where we want to send request to nginx docker container. Usually docker containers will have non-routable ip address.
